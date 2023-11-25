@@ -1,4 +1,4 @@
-# Advent of Code 2017
+# Advent of Code 2023
 
 These solutions are written in Python 3, and some may use Python 3.12 features. You can run either a single day to get its answer and runtime, or run all the available days and get their combined runtime.
 
