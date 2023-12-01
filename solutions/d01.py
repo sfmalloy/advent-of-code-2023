@@ -1,6 +1,22 @@
 from .lib.advent import advent
 from io import TextIOWrapper
 
+NAME_TO_DIGIT = {
+    'one': '1',
+    'two': '2',
+    'three': '3',
+    'four': '4',
+    'five': '5',
+    'six': '6',
+    'seven': '7',
+    'eight': '8',
+    'nine': '9'
+}
+
+
+REVERSED_NAME_TO_DIGIT = {k[::-1]:v for k,v in NAME_TO_DIGIT.items()}
+
+
 @advent.parser(1)
 def parse(file: TextIOWrapper):
     return [line.strip() for line in file.readlines()]
@@ -14,37 +30,45 @@ def day1(lines: list[str]):
         for c in line:
             if c.isdigit():
                 dsum += c
-        dsum = dsum[0] + dsum[-1]
+                break
+        for c in reversed(line):
+            if c.isdigit():
+                dsum += c
+                break
         s += int(dsum)
     return s
 
 
 @advent.day(1, part=2)
 def solve2(lines: list[str]):
-    nums = {
-        'one': 1,
-        'two': 2,
-        'three': 3,
-        'four': 4,
-        'five': 5,
-        'six': 6,
-        'seven': 7,
-        'eight': 8,
-        'nine': 9
-    }
     s = 0
     for line in lines:
-        indices = {}
-        for name, val in nums.items():
-            found = line.find(name)
-            while found != -1:
-                indices[found] = str(val)
-                found = line.find(name, found+1)
-        for i in range(1,10):
-            found = line.find(str(i))
-            while found != -1:
-                indices[found] = str(i)
-                found = line.find(str(i), found+1)
-        dsum = indices[min(indices)] + indices[max(indices)]
-        s += int(dsum)
+        s += int(find_first_digit(line) + find_last_digit(line))
     return s
+
+
+def find_first_digit(line: str):
+    for i,c in enumerate(line):
+        if c.isdigit():
+            return c
+        l = 3
+        word = line[i:i+l]
+        while l < 6:
+            if word in NAME_TO_DIGIT:
+                return NAME_TO_DIGIT[word]
+            l += 1
+            word = line[i:i+l]
+
+
+def find_last_digit(line: str):
+    rev = line[::-1]
+    for i,c in enumerate(rev):
+        if c.isdigit():
+            return c
+        l = 3
+        word = rev[i:i+l]
+        while l < 6:
+            if word in REVERSED_NAME_TO_DIGIT:
+                return REVERSED_NAME_TO_DIGIT[word]
+            l += 1
+            word = rev[i:i+l]
