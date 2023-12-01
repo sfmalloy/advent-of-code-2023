@@ -22,7 +22,7 @@ def parse(file: TextIOWrapper):
 
 
 @advent.day(1, part=1)
-def day1(lines: list[str]):
+def solve1(lines: list[str]):
     s = 0
     for line in lines:
         dsum = ''
