@@ -13,8 +13,7 @@ NAME_TO_DIGIT = {
     'nine': '9'
 }
 
-
-REVERSED_NAME_TO_DIGIT = {k[::-1]:v for k,v in NAME_TO_DIGIT.items()}
+REVERSED_NAME_TO_DIGIT = {k[::-1]:v for k, v in NAME_TO_DIGIT.items()}
 
 
 @advent.parser(1)
@@ -48,7 +47,7 @@ def solve2(lines: list[str]):
 
 
 def find_first_digit(line: str):
-    for i,c in enumerate(line):
+    for i, c in enumerate(line):
         if c.isdigit():
             return c
         l = 3
@@ -62,7 +61,7 @@ def find_first_digit(line: str):
 
 def find_last_digit(line: str):
     rev = line[::-1]
-    for i,c in enumerate(rev):
+    for i, c in enumerate(rev):
         if c.isdigit():
             return c
         l = 3
