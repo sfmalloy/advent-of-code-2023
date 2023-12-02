@@ -29,6 +29,7 @@ def parse(file: TextIOWrapper) -> list[list[CubeSet]]:
         games.append(game)
     return games
 
+
 @advent.day(2, part=1)
 def solve1(ipt: list[list[CubeSet]]):
     red = 12
