@@ -245,6 +245,8 @@ _start:
     mov rax, 11
     syscall                         # munmap(input)
 
+    # TODO close the file
+
     pop r15
     pop r14
     pop r13
