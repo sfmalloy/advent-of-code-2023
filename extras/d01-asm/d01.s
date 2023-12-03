@@ -75,7 +75,12 @@ str_to_int:
 
     pop rbx
     leave
-    ret    
+    ret
+/****************************************************************************/
+/**
+    bool str_equal(char* expect, char* actual, size_t expect_len)
+*/
+str_equal:
 
 /****************************************************************************/
 /**
@@ -173,6 +178,13 @@ part1_test:
     pop rbx
     leave
     ret
+/****************************************************************************/
+part2_first_digit:
+/****************************************************************************/
+part2_last_digit:
+/****************************************************************************/
+part2_test:
+
 
 /****************************************************************************/
 /**
@@ -229,6 +241,7 @@ _start:
 
                                     # accessing a string from NUM_NAMES
                                     # mov r11d, DWORD PTR [NUM_NAMES_LEN+4]
+                                    # inc r11
                                     # lea rdi, NUM_NAMES
                                     # add rdi, r11
     lea rdi, FILENAME
@@ -325,12 +338,12 @@ NUM_NAMES:
     .string "eight"
     .string "nine"
 NUM_NAMES_LEN:
+    .long 3
+    .long 3
+    .long 5
     .long 4
     .long 4
-    .long 6
+    .long 3
     .long 5
     .long 5
     .long 4
-    .long 6
-    .long 6
-    .long 5
