@@ -156,19 +156,62 @@ part1_test:
     xor r12, r12
     xor r13, r13
 .part1_loop:
-    cmp BYTE PTR [rbx+r12], 0xa
+    cmp BYTE PTR [rbx+r12], 0xa     # if (char == '\n) exit
     je .part1_exit
     mov dil, BYTE PTR [rbx+r12]
     call is_digit
-    cmp eax, 0
+    cmp eax, 0                      # if (!is_digit(char)) ...
     je .part1_inc
     inc r13
 .part1_inc:
-    inc r12
+    inc r12                         # ++idx
     jmp .part1_loop
 .part1_exit:
     mov rax, r13
     pop r13
+    pop r12
+    pop rbx
+    leave
+    ret
+
+/****************************************************************************/
+/**
+    void write_int(int num)
+*/
+write_int:
+    push rbp
+    mov rbp, rsp
+    push rbx
+    push r12
+
+    mov r12, 1
+    dec rsp                         # rsp acts as string buffer
+    mov BYTE PTR [rsp], 0xa         # append '\n'
+
+    mov rbx, rdi
+    mov rcx, 10
+.write_int_loop:
+    xor rdx, rdx
+    mov rax, rbx
+    idiv rcx
+    mov rbx, rax                    # num /= 10
+    add rdx, 0x30                   # char += '0'
+
+    inc r12                         # len += 1
+    dec rsp                         # increase string buffer size
+    mov BYTE PTR [rsp], dl          # append digit (dl == 8-bit rdx)
+
+    test rbx, rbx                   # if (rbx == 0) exit loop
+    je .write_int_exit
+    jmp .write_int_loop
+.write_int_exit:
+    mov rdi, 1
+    lea rsi, QWORD PTR [rsp]
+    mov rdx, r12
+    mov rax, 1
+    syscall
+
+    add rsp, r12
     pop r12
     pop rbx
     leave
@@ -184,7 +227,11 @@ _start:
     push r14                        # line_len
     push r15                        # input_idx
 
-    mov rdi, OFFSET FILENAME
+                                    # accessing a string from NUM_NAMES
+                                    # mov r11d, DWORD PTR [NUM_NAMES_LEN+4]
+                                    # lea rdi, NUM_NAMES
+                                    # add rdi, r11
+    lea rdi, FILENAME
     mov rsi, 0
     mov rax, 2
     syscall
@@ -238,14 +285,19 @@ _start:
     jmp .main_loop
 
 .cleanup:
-    mov rax, QWORD PTR [rbp-10]
+    mov rdi, QWORD PTR [rbp-10]
+    call write_int
+
     add rsp, 10
+
     mov rdi, r13
     mov rsi, r12
     mov rax, 11
     syscall                         # munmap(input)
 
-    # TODO close the file
+    mov rdi, rbx
+    mov rax, 3
+    syscall                         # close(fd)
 
     pop r15
     pop r14
@@ -259,5 +311,26 @@ _start:
 /****************************************************************************/
 
     .data
+    .align 8
 FILENAME:
     .string "d01.in"
+NUM_NAMES:
+    .string "one"
+    .string "two"
+    .string "three"
+    .string "four"
+    .string "five"
+    .string "six"
+    .string "seven"
+    .string "eight"
+    .string "nine"
+NUM_NAMES_LEN:
+    .long 4
+    .long 4
+    .long 6
+    .long 5
+    .long 5
+    .long 4
+    .long 6
+    .long 6
+    .long 5
