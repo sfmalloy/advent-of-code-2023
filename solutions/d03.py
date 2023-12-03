@@ -3,16 +3,17 @@ from io import TextIOWrapper
 from dataclasses import dataclass
 from collections import defaultdict
 
+
 @dataclass
 class Data:
-    range: defaultdict[int, list[tuple[int, int]]]
+    num_pos: defaultdict[int, list[tuple[int, int]]]
     grid: list[str]
 
 
 @advent.parser(3)
-def parse(file: TextIOWrapper):
-    nums = {}
-    pos_dict = defaultdict(list)
+def parse(file: TextIOWrapper) -> Data:
+    num_pos = defaultdict(list)
+    # add a '.' to the end of each line to cover for if a number ends on an edge
     lines = [line.strip() + '.' for line in file.readlines()]
     for row, line in enumerate(lines):
         num = ''
@@ -22,47 +23,33 @@ def parse(file: TextIOWrapper):
                 num += char
                 pos.append((row,col))
             elif num != '':
-                for p in pos:
-                    nums[p] = int(num)
-                pos_dict[int(num)].append(pos)
+                num_pos[int(num)].append(pos)
                 num = ''
                 pos = []
-    return Data(pos_dict, lines)
+    return Data(num_pos, lines)
 
 
 @advent.day(3)
 def solve1(ipt: Data):
     total = 0
     gears = defaultdict(list)
-    for num,pos in ipt.range.items():
-        for plist in pos:
-            parts = adj_parts(plist, ipt)
+    for num, pos in ipt.num_pos.items():
+        for pos_range in pos:
+            parts = adj_parts(pos_range, ipt)
             if len(parts) > 0:
                 total += num
-            for r,c in parts:
+            for r, c in parts:
                 if ipt.grid[r][c] == '*':
                     gears[(r,c)].append(num)
-    ratios = 0
-    for nums in gears.values():
-        if len(nums) == 2:
-            ratios += nums[0] * nums[1]
-    return total, ratios
+    return total, sum(nums[0] * nums[1] for nums in gears.values() if len(nums) == 2)
 
 
-def adj_parts(plist: list, ipt: Data):
+def adj_parts(pos_range: list[tuple[int, int]], ipt: Data):
     parts = set()
-    for i,j in plist:
-        adj = set()
-        adj.add((i+1,j))
-        adj.add((i-1,j))
-        adj.add((i,j+1))
-        adj.add((i,j-1))
-        adj.add((i+1,j+1))
-        adj.add((i-1,j+1))
-        adj.add((i+1,j-1))
-        adj.add((i-1,j-1))
-        for r,c in adj:
-            if r >= 0 and c >= 0 and r < len(ipt.grid) and c < len(ipt.grid[r]):
-                if ipt.grid[r][c] != '.' and not ipt.grid[r][c].isdigit():
-                    parts.add((r,c))
+    for i, j in pos_range:
+        for r in range(i-1,i+2):
+            for c in range(j-1,j+2):
+                if r >= 0 and c >= 0 and r < len(ipt.grid) and c < len(ipt.grid[r]) \
+                    and ipt.grid[r][c] != '.' and not ipt.grid[r][c].isdigit():
+                        parts.add((r,c))
     return parts
