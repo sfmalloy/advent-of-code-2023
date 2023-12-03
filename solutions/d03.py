@@ -36,7 +36,7 @@ def solve1(ipt: Data):
     gears = defaultdict(list)
     for num,pos in ipt.range.items():
         for plist in pos:
-            parts = adj_num(plist, ipt)
+            parts = adj_parts(plist, ipt)
             if len(parts) > 0:
                 total += num
             for r,c in parts:
@@ -49,7 +49,7 @@ def solve1(ipt: Data):
     return total, ratios
 
 
-def adj_num(plist: list, ipt: Data):
+def adj_parts(plist: list, ipt: Data):
     parts = set()
     for i,j in plist:
         adj = set()
