@@ -92,7 +92,7 @@ from io import TextIOWrapper
 
 @advent.parser({day_number})
 def parse(file: TextIOWrapper):
-    liens = [line.strip() for line in file.readlines()]
+    lines = [line.strip() for line in file.readlines()]
     return lines
 
 
