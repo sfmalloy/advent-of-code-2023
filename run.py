@@ -29,7 +29,7 @@ def main():
             generate_new_file(options.day)
         if options.download_input:
             res = download(options.day)
-        else:
+        if not options.download_input and not options.generate_day:
             res = advent.run(options.day, options.file, options.num_runs, options.hide)
             print_table([res])
     elif options.run_all:
