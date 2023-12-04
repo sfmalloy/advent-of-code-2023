@@ -29,8 +29,10 @@ def solve1(cards: list[Card]):
 @advent.day(4, part=2)
 def solve1(cards: list[Card]):
     counts = [1 for _ in range(len(cards))]
+    total = 0
     for i,card in enumerate(cards):
         num_winners = len(card.winners & card.mine)
         for c in range(i+1, i+num_winners+1):
             counts[c] += counts[i]
-    return sum(counts)
+        total += counts[c]
+    return total
