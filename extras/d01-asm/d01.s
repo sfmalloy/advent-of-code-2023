@@ -487,11 +487,6 @@ _start:
     push r14                        # line_len
     push r15                        # input_idx
 
-                                    # accessing a string from NUM_NAMES
-                                    # mov r11d, DWORD PTR [NUM_NAMES_LEN+4]
-                                    # inc r11
-                                    # lea rdi, NUM_NAMES
-                                    # add rdi, r11
     lea rdi, FILENAME
     mov rsi, 0
     mov rax, 2
@@ -614,7 +609,6 @@ REVERSE_NUM_NAMES:
     .string "neves"
     .string "thgie"
     .string "enin"
-    .align 8
 NUM_NAMES_LEN:
     .long 3
     .long 3
