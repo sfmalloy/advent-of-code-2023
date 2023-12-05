@@ -1,5 +1,5 @@
 d01: d01.s
-	as -g $^ -o $@.o
+	as -msyntax=intel $^ -o $@.o
 	ld $@.o -o $@
 
 .PHONY: clean
