@@ -27,7 +27,7 @@ def solve1(cards: list[Card]):
 
 
 @advent.day(4, part=2)
-def solve1(cards: list[Card]):
+def solve2(cards: list[Card]):
     counts = [1 for _ in range(len(cards))]
     total = 0
     for i,card in enumerate(cards):
