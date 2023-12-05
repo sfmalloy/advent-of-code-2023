@@ -510,7 +510,7 @@ _start:
     xor r9, r9
     mov rax, 9
     syscall
-    mov r13, rax                    # input = mmap(NULL, fsize, PROT_READ, MAP_SHARED, fd, 0)
+    mov r13, rax                    # input = mmap(NULL, fsize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0)
 
     sub rsp, 18
     xor r15, r15
