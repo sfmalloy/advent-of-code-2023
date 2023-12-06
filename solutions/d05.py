@@ -1,71 +1,112 @@
 from .lib.advent import advent
 from io import TextIOWrapper
 from dataclasses import dataclass
-from collections import defaultdict
-import re
-from pprint import pprint
 
 
-@dataclass
 class MapRange:
-    dst: int
-    src: int
-    amt: int
+    src_min: int
+    src_max: int
+    dst_min: int
+    dst_max: int
+
+    def __init__(self, dst: int=0, src: int=0, amt: int=0, src_pair: tuple[int, int]=None, dst_pair: tuple[int, int]=None):
+        if not src_pair or not dst_pair:
+            self.src_min = src
+            self.src_max = src + amt - 1
+            self.dst_min = dst
+            self.dst_max = dst + amt - 1
+            self.diff = dst - src
+        elif src_pair and dst_pair:
+            self.src_min = src_pair[0]
+            self.src_max = src_pair[1]
+            self.dst_min = dst_pair[0]
+            self.dst_max = dst_pair[1]
+            self.diff = dst_pair[0] - src_pair[0]
+    
 
     def convert(self, src: int) -> int | None:
-        ds = src - self.src
-        if ds <= self.amt and ds >= 0:
-            return self.dst + ds
+        if self.src_min <= src <= self.src_max:
+            return src + self.diff
         return None
 
-ConversionMap = defaultdict[str, defaultdict[str, list[MapRange]]]
+
+    def reverse_convert(self, dst: int) -> int | None:
+        if self.dst_min <= dst <= self.dst_max:
+            return dst - self.diff
+        return None
+
+    
+    def __str__(self):
+        return f'({self.src_min}, {self.src_max}) => ({self.dst_min}, {self.dst_max})'
+    
+    def __repr__(self) -> str:
+        return self.__str__()
+
 @dataclass
 class ConversionRules:
     seeds: list[int]
-    maps: ConversionMap
+    maps: list[list[MapRange]]
 
+NAMES = []
 
 @advent.parser(5)
 def parse(file: TextIOWrapper):
     blocks = [line.strip() for line in file.read().split('\n\n')]
-    maps: ConversionMap = defaultdict(lambda: defaultdict(list))
+    maps: list[list[MapRange]] = []
     seeds = list(map(int, blocks[0].split(': ')[1].split()))
     for b in blocks[1:]:
         block_data = b.split('\n')
-        src_name, _, dst_name, _ = re.split(r'-| map:', block_data[0])
+        curr = []
+        NAMES.append(block_data[0].strip())
         for row in block_data[1:]:
             dst, src, amt = map(int, row.strip().split())
-            maps[src_name][dst_name].append(MapRange(dst, src, amt))
+            curr.append(MapRange(dst, src, amt))
+        maps.append(curr)
     return ConversionRules(seeds, maps)
 
 
 @advent.day(5, part=1)
 def solve1(ipt: ConversionRules):
-    src_key = 'seed'
-    goal_key = 'location'
     conversions = [s for s in ipt.seeds]
-    while src_key != goal_key:
-        dst_key = list(ipt.maps[src_key].keys())[0]
+    for m in ipt.maps:
         new_conversions = []
-        print(ipt.maps[src_key])
         for num in conversions:
-            new_conversions.append(get_conversion(src_key, dst_key, num, ipt.maps))
+            new_conversions.append(fwd_convert(num, m))
         conversions = new_conversions
-        print(conversions)
-        src_key = dst_key
-        
     return min(conversions)
 
 
 @advent.day(5, part=2)
-def solve2(ipt):
-    return 0
+def solve2(ipt: ConversionRules):
+    seed_ranges = [(ipt.seeds[i], ipt.seeds[i]+ipt.seeds[i+1]-1) for i in range(0, len(ipt.seeds), 2)]
+    val = 0
+    while True:
+        prev = val
+        for m in reversed(ipt.maps):
+            val = rev_convert(val, m)
+        if is_valid_seed(val, seed_ranges):
+            return prev
+        val = prev + 1
 
 
-def get_conversion(src: str, dst: str, num: int, maps: ConversionMap):
-    for m in maps[src][dst]:
-        c = m.convert(num)
-        if c:
-            return c
-        print(src, dst, num, c)
+def fwd_convert(num: int, map: list[MapRange]):
+    for m in map:
+        val = m.convert(num)
+        if val:
+            return val
     return num
+
+
+def rev_convert(num: int, map: list[MapRange]):
+    for m in map:
+        val = m.reverse_convert(num)
+        if val:
+            return val
+    return num
+
+
+def is_valid_seed(num: int, seed_ranges: list[tuple[int, int]]):
+    for (mn, mx) in seed_ranges:
+        if mn <= num <= mx:
+            return True
+    return False
