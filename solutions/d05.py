@@ -8,21 +8,14 @@ class MapRange:
     src_max: int
     dst_min: int
     dst_max: int
+    diff: int
 
-    def __init__(self, dst: int=0, src: int=0, amt: int=0, src_pair: tuple[int, int]=None, dst_pair: tuple[int, int]=None):
-        if not src_pair or not dst_pair:
-            self.src_min = src
-            self.src_max = src + amt - 1
-            self.dst_min = dst
-            self.dst_max = dst + amt - 1
-            self.diff = dst - src
-        elif src_pair and dst_pair:
-            self.src_min = src_pair[0]
-            self.src_max = src_pair[1]
-            self.dst_min = dst_pair[0]
-            self.dst_max = dst_pair[1]
-            self.diff = dst_pair[0] - src_pair[0]
-    
+    def __init__(self, dst: int, src: int, amt: int):
+        self.src_min = src
+        self.src_max = src + amt - 1
+        self.dst_min = dst
+        self.dst_max = dst + amt - 1
+        self.diff = dst - src    
 
     def convert(self, src: int) -> int | None:
         if self.src_min <= src <= self.src_max:
@@ -35,19 +28,12 @@ class MapRange:
             return dst - self.diff
         return None
 
-    
-    def __str__(self):
-        return f'({self.src_min}, {self.src_max}) => ({self.dst_min}, {self.dst_max})'
-    
-    def __repr__(self) -> str:
-        return self.__str__()
 
 @dataclass
 class ConversionRules:
     seeds: list[int]
     maps: list[list[MapRange]]
 
-NAMES = []
 
 @advent.parser(5)
 def parse(file: TextIOWrapper):
@@ -57,7 +43,6 @@ def parse(file: TextIOWrapper):
     for b in blocks[1:]:
         block_data = b.split('\n')
         curr = []
-        NAMES.append(block_data[0].strip())
         for row in block_data[1:]:
             dst, src, amt = map(int, row.strip().split())
             curr.append(MapRange(dst, src, amt))
