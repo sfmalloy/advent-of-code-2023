@@ -29,4 +29,4 @@ def num_wins(race: Race) -> int:
     t_hold = 0
     while (race.time - t_hold) * t_hold <= race.dist:
         t_hold += 1
-    return (race.time - t_hold) - t_hold + 1
+    return race.time - 2*t_hold + 1

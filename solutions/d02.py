@@ -4,9 +4,9 @@ from dataclasses import dataclass
 
 @dataclass
 class CubeSet:
-    red: int=0
-    green: int=0
-    blue: int=0
+    red: int = 0
+    green: int = 0
+    blue: int = 0
 
 
 @advent.parser(2)
@@ -59,4 +59,3 @@ def solve2(ipt: list[list[CubeSet]]):
             blue = max(round.blue, blue)
             green = max(round.green, green)
         pow += red*green*blue
-    return pow

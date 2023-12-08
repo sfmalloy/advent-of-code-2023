@@ -40,7 +40,7 @@ def solve1(ipt: Data):
                 total += num
             for r, c in parts:
                 if ipt.grid[r][c] == '*':
-                    gears[(r,c)].append(num)
+                    gears[(r, c)].append(num)
     return total, sum(nums[0] * nums[1] for nums in gears.values() if len(nums) == 2)
 
 
@@ -49,7 +49,8 @@ def adj_parts(pos_range: list[tuple[int, int]], ipt: Data):
     for i, j in pos_range:
         for r in range(i-1,i+2):
             for c in range(j-1,j+2):
-                if r >= 0 and c >= 0 and r < len(ipt.grid) and c < len(ipt.grid[r]) \
-                    and ipt.grid[r][c] != '.' and not ipt.grid[r][c].isdigit():
-                        parts.add((r,c))
+                if (r >= 0 and c >= 0 
+                    and r < len(ipt.grid) and c < len(ipt.grid[r])
+                    and ipt.grid[r][c] != '.' and not ipt.grid[r][c].isdigit()):
+                    parts.add((r, c))
     return parts

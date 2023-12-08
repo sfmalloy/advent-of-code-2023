@@ -22,7 +22,7 @@ class Hand:
     hand: str
     bid: int
     encoded_hand: list[int] = field(default_factory=list)
-    hand_type: HandType=HandType.HIGH_CARD
+    hand_type: HandType = HandType.HIGH_CARD
 
 
 CARD_ENCODINGS_PART_1 = {
@@ -83,7 +83,7 @@ def solve1(ipt: list[Hand]):
     return count_winnings(buckets)
 
 
-@advent.day(7, part=2, reparse=True)
+@advent.day(7, part=2)
 def solve2(ipt: list[Hand]):
     for hand in ipt:
         hand.encoded_hand = [CARD_ENCODINGS_PART_2[c] for c in hand.hand]
