@@ -1,22 +1,16 @@
 from .lib.advent import advent
 from io import TextIOWrapper
-from dataclasses import dataclass
-from collections import deque
+
 import re
 import math
-
-
-@dataclass
-class Node:
-    src: str
-    left: str
-    right: str
+from dataclasses import dataclass
+from collections import deque
 
 
 @dataclass
 class Data:
     dirs: list[int]
-    nodes: dict[str, Node]
+    nodes: dict[str, tuple[int, int]]
 
 
 @advent.parser(8)
@@ -24,9 +18,9 @@ def parse(file: TextIOWrapper):
     dirs, nodes = file.read().split('\n\n')
     parsed_nodes = {}
     for line in nodes.split('\n')[:-1]:
-        src, left, right = re.search(r'([0-9A-Z]{3}) = \(([0-9A-Z]{3}), ([0-9A-Z]{3})\)', line).groups()
+        src, left, right = re.findall(r'([0-9A-Z]{3})', line)
         parsed_nodes[src] = (left, right)
-    return Data([0 if d == 'L' else 1 for d in dirs], parsed_nodes)
+    return Data([int(d == 'R') for d in dirs], parsed_nodes)
 
 
 @advent.day(8, part=1)
@@ -35,8 +29,8 @@ def solve1(ipt: Data):
     curr = 'AAA'
     L = len(ipt.dirs)
     while curr != 'ZZZ':
-        d = ipt.dirs[dist % L]
-        curr = ipt.nodes[curr][d]
+        dir = ipt.dirs[dist % L]
+        curr = ipt.nodes[curr][dir]
         dist += 1
     return dist
 
@@ -44,15 +38,17 @@ def solve1(ipt: Data):
 @advent.day(8, part=2)
 def solve2(ipt: Data):
     q = deque([])
-    for n in ipt.nodes:
-        if n[2] == 'A':
-            q.append((n, 0, 0))
+    for name in ipt.nodes:
+        if name[2] == 'A':
+            q.append((name, 0))
+
     dists = []
     L = len(ipt.dirs)
     while len(q) > 0:
-        n, d, idx = q.popleft()
-        if n[2] == 'Z':
-            dists.append(d)
-            continue
-        q.append((ipt.nodes[n][ipt.dirs[idx]], d+1, (idx+1) % L))
+        name, dist = q.popleft()
+        if name[2] == 'Z':
+            dists.append(dist)
+        else:
+            dir = ipt.dirs[dist%L]
+            q.append((ipt.nodes[name][dir], dist+1))
     return math.lcm(*dists)
