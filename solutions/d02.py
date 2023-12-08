@@ -59,3 +59,4 @@ def solve2(ipt: list[list[CubeSet]]):
             blue = max(round.blue, blue)
             green = max(round.green, green)
         pow += red*green*blue
+    return pow

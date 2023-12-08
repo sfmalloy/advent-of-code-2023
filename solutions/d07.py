@@ -25,39 +25,6 @@ class Hand:
     hand_type: HandType = HandType.HIGH_CARD
 
 
-CARD_ENCODINGS_PART_1 = {
-    'A': 13,
-    'K': 12,
-    'Q': 11,
-    'J': 10,
-    'T': 9,
-    '9': 8,
-    '8': 7,
-    '7': 6,
-    '6': 5,
-    '5': 4,
-    '4': 3,
-    '3': 2,
-    '2': 1
-}
-
-CARD_ENCODINGS_PART_2 = {
-    'A': 13,
-    'K': 12,
-    'Q': 11,
-    'T': 10,
-    '9': 9,
-    '8': 8,
-    '7': 7,
-    '6': 6,
-    '5': 5,
-    '4': 4,
-    '3': 3,
-    '2': 2,
-    'J': 1
-}
-
-
 @advent.parser(7)
 def parse(file: TextIOWrapper):
     hands = []
@@ -69,8 +36,24 @@ def parse(file: TextIOWrapper):
 
 @advent.day(7, part=1)
 def solve1(ipt: list[Hand]):
+    card_encodings = {
+        'A': 13,
+        'K': 12,
+        'Q': 11,
+        'J': 10,
+        'T': 9,
+        '9': 8,
+        '8': 7,
+        '7': 6,
+        '6': 5,
+        '5': 4,
+        '4': 3,
+        '3': 2,
+        '2': 1
+    }
+
     for hand in ipt:
-        hand.encoded_hand = [CARD_ENCODINGS_PART_1[c] for c in hand.hand]
+        hand.encoded_hand = [card_encodings[c] for c in hand.hand]
 
     buckets: dict[HandType, list[Hand]] = {hand_type: [] for hand_type in HandType}
     for row in ipt:
@@ -85,8 +68,24 @@ def solve1(ipt: list[Hand]):
 
 @advent.day(7, part=2)
 def solve2(ipt: list[Hand]):
+    card_encodings = {
+        'A': 13,
+        'K': 12,
+        'Q': 11,
+        'T': 10,
+        '9': 9,
+        '8': 8,
+        '7': 7,
+        '6': 6,
+        '5': 5,
+        '4': 4,
+        '3': 3,
+        '2': 2,
+        'J': 1
+    }
+
     for hand in ipt:
-        hand.encoded_hand = [CARD_ENCODINGS_PART_2[c] for c in hand.hand]
+        hand.encoded_hand = [card_encodings[c] for c in hand.hand]
 
     buckets: dict[HandType, list[Hand]] = {hand_type: [] for hand_type in HandType}
     j_set = {'J'}
