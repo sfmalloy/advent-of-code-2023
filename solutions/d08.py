@@ -33,14 +33,11 @@ def parse(file: TextIOWrapper):
 def solve1(ipt: Data):
     dist = 0
     curr = 'AAA'
-    idx = 0
+    L = len(ipt.dirs)
     while curr != 'ZZZ':
-        d = ipt.dirs[idx]
+        d = ipt.dirs[dist % L]
         curr = ipt.nodes[curr][d]
         dist += 1
-        idx += 1
-        if idx == len(ipt.dirs):
-            idx = 0
     return dist
 
 
@@ -50,8 +47,8 @@ def solve2(ipt: Data):
     for n in ipt.nodes:
         if n[2] == 'A':
             q.append((n, 0, 0))
-    L = len(ipt.dirs)
     dists = []
+    L = len(ipt.dirs)
     while len(q) > 0:
         n, d, idx = q.popleft()
         if n[2] == 'Z':
