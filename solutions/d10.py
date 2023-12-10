@@ -84,6 +84,7 @@ def parse(file: TextIOWrapper):
                 if node.symbol in east_symbols:
                     node.add_neighbor(node.pos.r, node.pos.c+1, grid, west_symbols)
 
+    # remove extra pipes that aren't connected to a loop
     has_extra = True    
     while has_extra:
         has_extra = False
@@ -104,6 +105,7 @@ def parse(file: TextIOWrapper):
 
 @advent.day(10, part=1)
 def solve1(ipt: Data):
+    # Dijsktra's for distances
     q = deque([ipt.start])
     ipt.start.dist = 0
     while len(q) > 0:
@@ -113,6 +115,7 @@ def solve1(ipt: Data):
                 neighbor.dist = node.dist + 1
                 q.append(neighbor)
     
+    # Another BFS pass to get largest distance within the main loop
     q = deque([ipt.start])
     far = 0
     while len(q) > 0:
@@ -122,18 +125,24 @@ def solve1(ipt: Data):
         for neighbor in node.neighbors:
             if not neighbor.visited:
                 q.append(neighbor)
+
     return far
 
 
 @advent.day(10, part=2, reparse=False)
 def solve2(ipt: Data):
+    # Remove any extra pipes that aren't part of the MAIN loop
     for r, row in enumerate(ipt.grid):
         for c, node in enumerate(row):
             if node is not None and node.dist == INF:
                 ipt.grid[r][c] = None
 
+    # Replace S with whatever pipe shape it's supposed to have
     ipt.start.symbol = find_start_symbol(ipt.start)
 
+    # Create fake gaps between all the symbols with a different filler symbol
+    #   as to not get counted as ground. Also includes padding on all 4 sides
+    #   of the grid to make it so I can do flood fill from 1 starting point
     filler = '*'
     symbols = []
     for r, row in enumerate(ipt.grid):
@@ -148,6 +157,8 @@ def solve2(ipt: Data):
         symbols.append([filler]*len(srow))
     symbols = [[filler]*len(symbols[0])] + symbols
     
+    # Extend previous connections replacing filler spots with either | or - depending
+    #   on the direction
     for r, row in enumerate(symbols):
         for c, col in enumerate(row):
             pos = Point(r, c)
@@ -159,6 +170,8 @@ def solve2(ipt: Data):
                 if in_bounds(east, symbols) and symbols[east.r][east.c] in '-7J':
                     symbols[r][c] = '-'
 
+    # Flood fill starting from outside the loop.
+    # If ground or filler is encountered, replace with 'O'
     q = deque([Point(0, 0)])
     while len(q) > 0:
         pos = q.pop()
@@ -176,6 +189,8 @@ def solve2(ipt: Data):
         if in_bounds(east, symbols) and symbols[east.r][east.c] in '.*':
             q.append(east)
 
+    # All remaining dots are fully contained in the loop so we can just count
+    #   the leftovers
     total = 0    
     for row in symbols:
         for col in row:
