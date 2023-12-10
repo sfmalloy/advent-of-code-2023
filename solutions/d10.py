@@ -20,9 +20,6 @@ class Node:
     visited: bool = False
 
     def add_neighbor(self, r: int, c: int, grid: list[list[Optional[Self]]], valid_symbols: set[str]):
-        '''
-        Adds the Node at grid[r][c] if it's a valid position, and not None. Otherwise None
-        '''
         if r >= 0 and c >= 0 and r < len(grid) and c < len(grid[r]) \
             and grid[r][c] is not None and grid[r][c].symbol in valid_symbols:
             self.neighbors.append(grid[r][c])
