@@ -1,7 +1,6 @@
 from .lib.advent import advent
-from .lib.util import Point, Dir
+from .lib.util import Point
 from io import TextIOWrapper
-from collections import deque
 from dataclasses import dataclass
 
 @dataclass
