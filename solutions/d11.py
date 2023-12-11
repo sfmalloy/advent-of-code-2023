@@ -20,31 +20,26 @@ def parse(file: TextIOWrapper):
             if col == '#':
                 galaxies.append(Point(r, c))
     
-    empty_rows = []
-    for r, row in enumerate(grid):
-        if row.count('#') == 0:
-            empty_rows.append(r)
-    
-    empty_cols = []
-    for c, col in enumerate(zip(*grid)):
-        if col.count('#') == 0:
-            empty_cols.append(c)
-
-    return CosmicData(galaxies, empty_rows, empty_cols)
+    return CosmicData(
+        galaxies,
+        [r for r, row in enumerate(grid) if row.count('#') == 0],
+        [c for c, col in enumerate(zip(*grid)) if col.count('#') == 0]
+    )
 
 
 @advent.day(11, part=1)
 def solve1(data: CosmicData):
-    return total_dists(expand(data, 2))
+    return total_dists(data, 2)
 
 
 @advent.day(11, part=2, reparse=False)
 def solve2(data: CosmicData):
-    return total_dists(expand(data, 1000000))
+    return total_dists(data, 1000000)
 
 
-def total_dists(galaxies: list[Point]):
+def total_dists(data: CosmicData, expand_factor: int):
     dist = 0
+    galaxies = expand(data, expand_factor)
     for i, src in enumerate(galaxies):
         for dst in galaxies[i+1:]:
             if src != dst:
@@ -52,22 +47,22 @@ def total_dists(galaxies: list[Point]):
     return dist
 
 
-def expand(data: CosmicData, N: int):
-    N -= 1
+def expand(data: CosmicData, factor: int):
+    factor -= 1
     row_deltas = [0]*len(data.galaxies)
     for r in reversed(data.empty_rows):
         for g, galaxy in enumerate(data.galaxies):
             if galaxy.r > r:
-                row_deltas[g] += N
+                row_deltas[g] += factor
     
     col_deltas = [0]*len(data.galaxies)
     for c in reversed(data.empty_cols):
         for g, galaxy in enumerate(data.galaxies):
             if galaxy.c > c:
-                col_deltas[g] += N
+                col_deltas[g] += factor
 
     expanded = []
-    for g,dr,dc in zip(data.galaxies, row_deltas, col_deltas):
-        expanded.append(Point(g.r + dr, g.c + dc))
+    for galaxy, dr, dc in zip(data.galaxies, row_deltas, col_deltas):
+        expanded.append(Point(galaxy.r + dr, galaxy.c + dc))
 
     return expanded
