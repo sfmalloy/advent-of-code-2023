@@ -11,3 +11,14 @@ class Point:
     
     def __sub__(self, other: Self):
         return Point(self.r-other.r, self.c-other.c)
+    
+    def in_bounds(self, grid: list[list]):
+        return self.r >= 0 and self.c >= 0 and self.r < len(grid) and self.c < len(grid[self.r])
+
+
+
+class Dir:
+    N = Point(-1, 0)
+    S = Point(1, 0)
+    E = Point(0, 1)
+    W = Point(0, -1)

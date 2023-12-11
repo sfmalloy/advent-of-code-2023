@@ -1,15 +1,11 @@
 from .lib.advent import advent
-from .lib.util import Point
+from .lib.util import Point, Dir
 from io import TextIOWrapper
 from dataclasses import dataclass, field
 from typing import Self, Optional
 from collections import deque
 
 INF = 2**31-1
-N = Point(-1, 0)
-S = Point(1, 0)
-E = Point(0, 1)
-W = Point(0, -1)
 
 @dataclass(eq=True)
 class Node:
@@ -82,21 +78,18 @@ def parse(file: TextIOWrapper):
                     node.add_neighbor(node.pos.r, node.pos.c+1, grid, west_symbols)
 
     # remove extra pipes that aren't connected to a loop
-    has_extra = True    
-    while has_extra:
-        has_extra = False
-        to_remove: list[Point] = []
-        for row in grid:
-            for node in row:
-                if node is not None and not node.validate_neighbors():
-                    has_extra = True
+    to_remove: list[Point] = []
+    for row in grid:
+        for node in row:
+            if node is not None:
+                if not node.validate_neighbors():
                     to_remove.append(node.pos)
-        for pos in to_remove:
-            grid[pos.r][pos.c] = None
-        for row in grid:
-            for node in row:
-                if node is not None:
+                else:
                     node.filter_neighbors(grid)
+    # idk why but having this in a seperate loop is 20ms faster
+    for pos in to_remove:
+        grid[pos.r][pos.c] = None
+
     return Data(start, grid)
 
 
@@ -150,11 +143,11 @@ def solve2(ipt: Data):
         for c, col in enumerate(row):
             pos = Point(r, c)
             if col == filler:
-                north = pos+N
-                if in_bounds(north, symbols) and symbols[north.r][north.c] in '|7F':
+                north = pos + Dir.N
+                if north.in_bounds(symbols) and symbols[north.r][north.c] in '|7F':
                     symbols[r][c] = '|'
-                east = pos+E
-                if in_bounds(east, symbols) and symbols[east.r][east.c] in '-7J':
+                east = pos + Dir.E
+                if east.in_bounds(symbols) and symbols[east.r][east.c] in '-7J':
                     symbols[r][c] = '-'
 
     # Flood fill starting from outside the loop.
@@ -163,31 +156,26 @@ def solve2(ipt: Data):
     while len(q) > 0:
         pos = q.pop()
         symbols[pos.r][pos.c] = 'O'
-        north = pos+N
-        if in_bounds(north, symbols) and symbols[north.r][north.c] in '.*':
+
+        north = pos + Dir.N
+        if north.in_bounds(symbols) and symbols[north.r][north.c] in '.*':
             q.append(north)
-        south = pos+S
-        if in_bounds(south, symbols) and symbols[south.r][south.c] in '.*':
+
+        south = pos + Dir.S
+        if south.in_bounds(symbols) and symbols[south.r][south.c] in '.*':
             q.append(south)
-        west = pos+W
-        if in_bounds(west, symbols) and symbols[west.r][west.c] in '.*':
+
+        west = pos + Dir.W
+        if west.in_bounds(symbols) and symbols[west.r][west.c] in '.*':
             q.append(west)
-        east = pos+E
-        if in_bounds(east, symbols) and symbols[east.r][east.c] in '.*':
+
+        east = pos + Dir.E
+        if east.in_bounds(symbols) and symbols[east.r][east.c] in '.*':
             q.append(east)
 
     # All remaining dots are fully contained in the loop so we can just count
     #   the leftovers
-    total = 0    
-    for row in symbols:
-        for col in row:
-            if col == '.':
-                total += 1
-    return total
-
-
-def in_bounds(pt: Point, grid: list[list]):
-    return pt.r >= 0 and pt.c >= 0 and pt.r < len(grid) and pt.c < len(grid[pt.r])
+    return sum(sum(1 for c in row if c == '.') for row in symbols)
 
 
 def find_start_symbol(start: Node):
@@ -195,31 +183,31 @@ def find_start_symbol(start: Node):
     for n in start.neighbors:
         dirs.append(n.pos - start.pos)
 
-    if dirs[0] == N:
-        if dirs[1] == S:
+    if dirs[0] == Dir.N:
+        if dirs[1] == Dir.S:
             return '|'
-        elif dirs[1] == E:
+        elif dirs[1] == Dir.E:
             return 'L'
-        elif dirs[1] == W:
+        elif dirs[1] == Dir.W:
             return 'J'
-    elif dirs[0] == S:
-        if dirs[1] == N:
+    elif dirs[0] == Dir.S:
+        if dirs[1] == Dir.N:
             return '|'
-        elif dirs[1] == E:
+        elif dirs[1] == Dir.E:
             return 'F'
-        elif dirs[1] == W:
+        elif dirs[1] == Dir.W:
             return '7'
-    elif dirs[0] == E:
-        if dirs[1] == W:
+    elif dirs[0] == Dir.E:
+        if dirs[1] == Dir.W:
             return '-'
-        elif dirs[1] == N:
+        elif dirs[1] == Dir.N:
             return 'L'
-        elif dirs[1] == S:
+        elif dirs[1] == Dir.S:
             return 'F'
-    elif dirs[0] == W:
-        if dirs[1] == E:
+    elif dirs[0] == Dir.W:
+        if dirs[1] == Dir.E:
             return '-'
-        elif dirs[1] == N:
+        elif dirs[1] == Dir.N:
             return 'J'
-        elif dirs[1] == S:
+        elif dirs[1] == Dir.S:
             return '7'
