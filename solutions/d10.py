@@ -103,26 +103,16 @@ def parse(file: TextIOWrapper):
 @advent.day(10, part=1)
 def solve1(ipt: Data):
     # Dijsktra's for distances
+    far = 0
     q = deque([ipt.start])
     ipt.start.dist = 0
     while len(q) > 0:
         node = q.popleft()
+        far = max(node.dist, far)
         for neighbor in node.neighbors:
             if neighbor.dist > node.dist + 1:
                 neighbor.dist = node.dist + 1
                 q.append(neighbor)
-    
-    # Another BFS pass to get largest distance within the main loop
-    q = deque([ipt.start])
-    far = 0
-    while len(q) > 0:
-        node = q.popleft()
-        node.visited = True
-        far = max(far, node.dist)
-        for neighbor in node.neighbors:
-            if not neighbor.visited:
-                q.append(neighbor)
-
     return far
 
 
