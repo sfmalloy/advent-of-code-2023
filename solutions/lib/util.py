@@ -16,7 +16,6 @@ class Point:
         return self.r >= 0 and self.c >= 0 and self.r < len(grid) and self.c < len(grid[self.r])
 
 
-
 class Dir:
     N = Point(-1, 0)
     S = Point(1, 0)
