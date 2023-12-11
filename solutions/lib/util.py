@@ -7,13 +7,16 @@ class Point:
     c: int
 
     def __add__(self, other: Self):
-        return Point(self.r+other.r, self.c+other.c)
+        return Point(self.r + other.r, self.c + other.c)
     
     def __sub__(self, other: Self):
-        return Point(self.r-other.r, self.c-other.c)
+        return Point(self.r - other.r, self.c - other.c)
     
     def in_bounds(self, grid: list[list]):
         return self.r >= 0 and self.c >= 0 and self.r < len(grid) and self.c < len(grid[self.r])
+
+    def mdist(self, other):
+        return abs(self.r - other.r) + abs(self.c - other.c)
 
 
 class Dir:
