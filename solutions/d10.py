@@ -102,7 +102,7 @@ def parse(file: TextIOWrapper):
 
 @advent.day(10, part=1)
 def solve1(ipt: Data):
-    # Dijsktra's for distances
+    # Simple dijsktra's. Parser does most of the work for this part.
     far = 0
     q = deque([ipt.start])
     ipt.start.dist = 0
