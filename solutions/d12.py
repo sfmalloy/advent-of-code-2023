@@ -9,12 +9,11 @@ from functools import cache
 class Record:
     record: str
     sizes: tuple[int]
-    total: int=0
 
 
 @advent.parser(12)
 def parse(file: TextIOWrapper):
-    return [(lambda record, sizes: Record(record, tuple(map(int, sizes.split(','))), sum(tuple(map(int, sizes.split(','))))))(*line.strip().split()) 
+    return [(lambda record, sizes: Record(record, tuple(map(int, sizes.split(',')))))(*line.strip().split()) 
             for line in file.readlines()]
 
 @advent.day(12, part=1)
@@ -41,9 +40,10 @@ def arrange(record: Record):
         return '#' not in record.record
 
     sub = ''
-    prev_dots = 0
+    start_op = 0
     total = 0
-    sub = '.'*prev_dots + '#'*record.sizes[0] + ('.' if len(record.sizes) > 1 else '')
+    end_sub = '#'*record.sizes[0] + ('.' if len(record.sizes) > 1 else '')
+    sub = end_sub
     while len(sub) <= len(record.record):
         valid = True
         for s, r in zip(sub, record.record):
@@ -51,7 +51,7 @@ def arrange(record: Record):
                 valid = False
                 break
         if valid:
-            total += arrange(Record(record.record[len(sub):], record.sizes[1:], record.total))
-        prev_dots += 1
-        sub = '.'*prev_dots + '#'*record.sizes[0] + ('.' if len(record.sizes) > 1 else '')
+            total += arrange(Record(record.record[len(sub):], record.sizes[1:]))
+        start_op += 1
+        sub = '.'*start_op + end_sub
     return total
