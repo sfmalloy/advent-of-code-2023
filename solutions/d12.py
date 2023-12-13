@@ -16,22 +16,16 @@ def parse(file: TextIOWrapper):
             for line in file.readlines()]
 
 
-@advent.day(12, part=1)
+@advent.day(12)
 def solve1(records: list[Record]):
-    total = 0
+    p1 = 0
+    p2 = 0
     for record in records:
-        total += arrange(record)
-    return total
-
-
-@advent.day(12, part=2)
-def solve2(records: list[Record]):
-    total = 0
-    for record in records:
+        p1 += arrange(record)
         bigger_record = '?'.join([record.record for _ in range(5)])
         bigger_sizes = record.sizes*5
-        total += arrange(Record(bigger_record, bigger_sizes))
-    return total
+        p2 += arrange(Record(bigger_record, bigger_sizes))
+    return p1, p2
 
 
 @cache
