@@ -1,7 +1,6 @@
 from .lib.advent import advent
 from io import TextIOWrapper
 from dataclasses import dataclass
-from collections import deque
 from functools import cache
 
 
