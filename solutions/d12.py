@@ -16,6 +16,7 @@ def parse(file: TextIOWrapper):
     return [(lambda record, sizes: Record(record, tuple(map(int, sizes.split(',')))))(*line.strip().split()) 
             for line in file.readlines()]
 
+
 @advent.day(12, part=1)
 def solve1(records: list[Record]):
     total = 0
