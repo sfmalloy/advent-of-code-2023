@@ -26,7 +26,7 @@ class Hand:
 
 
 @advent.parser(7)
-def parse(file: TextIOWrapper):
+def parse(file: TextIOWrapper) -> list[Hand]:
     hands = []
     for line in file.readlines():
         hand_str, bid = line.strip().split()
@@ -35,7 +35,7 @@ def parse(file: TextIOWrapper):
 
 
 @advent.day(7, part=1)
-def solve1(ipt: list[Hand]):
+def solve1(ipt: list[Hand]) -> int:
     card_encodings = {
         'A': 13,
         'K': 12,
@@ -67,7 +67,7 @@ def solve1(ipt: list[Hand]):
 
 
 @advent.day(7, part=2)
-def solve2(ipt: list[Hand]):
+def solve2(ipt: list[Hand]) -> int:
     card_encodings = {
         'A': 13,
         'K': 12,
@@ -118,7 +118,7 @@ def compare(a: Hand, b: Hand) -> int:
     return a.encoded_hand[idx] - b.encoded_hand[idx]
 
 
-def parse_hand(hand: Hand):
+def parse_hand(hand: Hand) -> None:
     card_counts = defaultdict(int)
     for card in hand.hand:
         card_counts[card] += 1
@@ -142,7 +142,7 @@ def parse_hand(hand: Hand):
         hand.hand_type = HandType.ONE_PAIR
 
 
-def count_winnings(buckets: dict[HandType, list[Hand]]):
+def count_winnings(buckets: dict[HandType, list[Hand]]) -> int:
     winnings = 0
     idx = 1
     for hand_type in HandType:

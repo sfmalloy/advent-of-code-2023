@@ -10,7 +10,7 @@ class MapRange:
     dst_max: int
     diff: int
 
-    def __init__(self, dst: int, src: int, amt: int):
+    def __init__(self, dst: int, src: int, amt: int) -> None:
         self.src_min = src
         self.src_max = src + amt - 1
         self.dst_min = dst
@@ -36,7 +36,7 @@ class ConversionRules:
 
 
 @advent.parser(5)
-def parse(file: TextIOWrapper):
+def parse(file: TextIOWrapper) -> ConversionRules:
     blocks = [line.strip() for line in file.read().split('\n\n')]
     maps: list[list[MapRange]] = []
     seeds = list(map(int, blocks[0].split(': ')[1].split()))
@@ -51,7 +51,7 @@ def parse(file: TextIOWrapper):
 
 
 @advent.day(5, part=1)
-def solve1(ipt: ConversionRules):
+def solve1(ipt: ConversionRules) -> int:
     conversions = [s for s in ipt.seeds]
     for m in ipt.maps:
         new_conversions = []
@@ -62,7 +62,7 @@ def solve1(ipt: ConversionRules):
 
 
 @advent.day(5, part=2)
-def solve2(ipt: ConversionRules):
+def solve2(ipt: ConversionRules) -> int:
     seed_ranges = [(ipt.seeds[i], ipt.seeds[i]+ipt.seeds[i+1]-1) for i in range(0, len(ipt.seeds), 2)]
     val = 0
     while True:
@@ -74,7 +74,7 @@ def solve2(ipt: ConversionRules):
         val = prev + 1
 
 
-def fwd_convert(num: int, map: list[MapRange]):
+def fwd_convert(num: int, map: list[MapRange]) -> int:
     for m in map:
         val = m.convert(num)
         if val:
@@ -82,7 +82,7 @@ def fwd_convert(num: int, map: list[MapRange]):
     return num
 
 
-def rev_convert(num: int, map: list[MapRange]):
+def rev_convert(num: int, map: list[MapRange]) -> int:
     for m in map:
         val = m.reverse_convert(num)
         if val:
@@ -90,7 +90,7 @@ def rev_convert(num: int, map: list[MapRange]):
     return num
 
 
-def is_valid_seed(num: int, seed_ranges: list[tuple[int, int]]):
+def is_valid_seed(num: int, seed_ranges: list[tuple[int, int]]) -> bool:
     for (mn, mx) in seed_ranges:
         if mn <= num <= mx:
             return True

@@ -14,7 +14,7 @@ class Data:
 
 
 @advent.parser(8)
-def parse(file: TextIOWrapper):
+def parse(file: TextIOWrapper) -> Data:
     dirs, nodes = file.read().split('\n\n')
     parsed_nodes = {}
     for line in nodes.split('\n')[:-1]:
@@ -24,7 +24,7 @@ def parse(file: TextIOWrapper):
 
 
 @advent.day(8, part=1)
-def solve1(ipt: Data):
+def solve1(ipt: Data) -> int:
     dist = 0
     curr = 'AAA'
     L = len(ipt.dirs)
@@ -36,7 +36,7 @@ def solve1(ipt: Data):
 
 
 @advent.day(8, part=2)
-def solve2(ipt: Data):
+def solve2(ipt: Data) -> int:
     q = deque([])
     for name in ipt.nodes:
         if name[2] == 'A':

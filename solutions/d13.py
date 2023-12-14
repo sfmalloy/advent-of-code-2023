@@ -4,21 +4,21 @@ from typing import Sequence
 
 
 @advent.parser(13)
-def parse(file: TextIOWrapper):
+def parse(file: TextIOWrapper) -> list[list[str]]:
     return [line.strip().splitlines() for line in file.read().split('\n\n')]
 
 
 @advent.day(13, part=1)
-def solve1(patterns: list[list[str]]):
+def solve1(patterns: list[list[str]]) -> int:
     return find_reflection(patterns, 0)
 
 
 @advent.day(13, part=2)
-def solve2(patterns: list[list[str]]):
+def solve2(patterns: list[list[str]]) -> int:
     return find_reflection(patterns, 1)
 
 
-def find_reflection(patterns: list[list[str]], smudge_count: int):
+def find_reflection(patterns: list[list[str]], smudge_count: int) -> int:
     total = 0
     for pattern in patterns:
         horizontal_line = search_pattern(pattern, smudge_count)
@@ -31,7 +31,7 @@ def find_reflection(patterns: list[list[str]], smudge_count: int):
     return total
 
 
-def search_pattern(pattern: list[list[str]], smudge_count: int):
+def search_pattern(pattern: list[list[str]], smudge_count: int) -> int:
     for row in range(0, len(pattern) - 1):
         if count_smudges(pattern, row, row + 1) == smudge_count:
             return row + 1

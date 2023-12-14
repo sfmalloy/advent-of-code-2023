@@ -28,16 +28,16 @@ def parse(file: TextIOWrapper):
 
 
 @advent.day(11, part=1)
-def solve1(data: CosmicData):
+def solve1(data: CosmicData) -> int:
     return total_dists(data, 2)
 
 
 @advent.day(11, part=2, reparse=False)
-def solve2(data: CosmicData):
+def solve2(data: CosmicData) -> int:
     return total_dists(data, 1000000)
 
 
-def total_dists(data: CosmicData, expand_factor: int):
+def total_dists(data: CosmicData, expand_factor: int) -> int:
     dist = 0
     galaxies = expand(data, expand_factor)
     for i, src in enumerate(galaxies):
@@ -47,7 +47,7 @@ def total_dists(data: CosmicData, expand_factor: int):
     return dist
 
 
-def expand(data: CosmicData, factor: int):
+def expand(data: CosmicData, factor: int) -> list[Point]:
     factor -= 1
     row_deltas = [0]*len(data.galaxies)
     for r in reversed(data.empty_rows):

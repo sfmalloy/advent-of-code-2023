@@ -9,7 +9,7 @@ class Race:
 
 
 @advent.day(6, part=1)
-def solve1(file: TextIOWrapper):
+def solve1(file: TextIOWrapper) -> int:
     times, dists = [list(map(int, line.strip().split(': ')[1].split())) for line in file.readlines()]
     races = [Race(t, d) for t, d in zip(times, dists)]
     mult = 1
@@ -19,7 +19,7 @@ def solve1(file: TextIOWrapper):
 
 
 @advent.day(6, part=2)
-def solve2(file: TextIOWrapper):
+def solve2(file: TextIOWrapper) -> int:
     time = int(''.join(file.readline().strip().split(': ')[1].split()))
     dist = int(''.join(file.readline().strip().split(': ')[1].split()))
     return num_wins(Race(time, dist))

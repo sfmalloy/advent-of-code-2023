@@ -15,15 +15,15 @@ class Node:
     neighbors: list[Self] = field(default_factory=list)
     visited: bool = False
 
-    def add_neighbor(self, r: int, c: int, grid: list[list[Optional[Self]]], valid_symbols: set[str]):
+    def add_neighbor(self, r: int, c: int, grid: list[list[Optional[Self]]], valid_symbols: set[str]) -> None:
         if r >= 0 and c >= 0 and r < len(grid) and c < len(grid[r]) \
             and grid[r][c] is not None and grid[r][c].symbol in valid_symbols:
             self.neighbors.append(grid[r][c])
     
-    def validate_neighbors(self):
+    def validate_neighbors(self) -> bool:
         return (self.symbol == 'S' or len(self.neighbors) == 2)
     
-    def filter_neighbors(self, grid: list[list[Optional[Self]]]):
+    def filter_neighbors(self, grid: list[list[Optional[Self]]]) -> None:
         filtered = []
         for neighbor in self.neighbors:
             if grid[neighbor.pos.r][neighbor.pos.c] is not None:
@@ -41,7 +41,7 @@ class Data:
 
 
 @advent.parser(10)
-def parse(file: TextIOWrapper):
+def parse(file: TextIOWrapper) -> Data:
     lines = [line.strip() for line in file.readlines()]
     grid: list[list[Optional[Node]]] = []
     start = None
@@ -94,7 +94,7 @@ def parse(file: TextIOWrapper):
 
 
 @advent.day(10, part=1)
-def solve1(ipt: Data):
+def solve1(ipt: Data) -> int:
     # Simple dijsktra's. Parser does most of the work for this part.
     far = 0
     q = deque([ipt.start])
@@ -110,7 +110,7 @@ def solve1(ipt: Data):
 
 
 @advent.day(10, part=2, reparse=False)
-def solve2(ipt: Data):
+def solve2(ipt: Data) -> int:
     # Remove any extra pipes that aren't part of the MAIN loop
     for r, row in enumerate(ipt.grid):
         for c, node in enumerate(row):
@@ -178,7 +178,7 @@ def solve2(ipt: Data):
     return sum(sum(1 for c in row if c == '.') for row in symbols)
 
 
-def find_start_symbol(start: Node):
+def find_start_symbol(start: Node) -> str:
     dirs = []
     for n in start.neighbors:
         dirs.append(n.pos - start.pos)

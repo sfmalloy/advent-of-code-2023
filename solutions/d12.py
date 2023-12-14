@@ -17,7 +17,7 @@ def parse(file: TextIOWrapper):
 
 
 @advent.day(12)
-def solve1(records: list[Record]):
+def solve(records: list[Record]) -> tuple[int, int]:
     p1 = 0
     p2 = 0
     for record in records:
@@ -29,7 +29,7 @@ def solve1(records: list[Record]):
 
 
 @cache
-def arrange(record: Record):
+def arrange(record: Record) -> int:
     if len(record.sizes) == 0:
         return '#' not in record.record
 

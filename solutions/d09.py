@@ -9,7 +9,7 @@ def parse(file: TextIOWrapper):
 
 
 @advent.day(9)
-def solve(ipt: list[deque[int]]):
+def solve(ipt: list[deque[int]]) -> tuple[int, int]:
     fwd = 0
     bck = 0
     for row in ipt:
@@ -19,7 +19,7 @@ def solve(ipt: list[deque[int]]):
     return fwd, bck
 
 
-def expand(top: deque[int]):
+def expand(top: deque[int]) -> list[deque[int]]:
     rows = [top]
     while any(rows[-1]):
         new = deque([])
@@ -29,7 +29,7 @@ def expand(top: deque[int]):
     return rows
 
 
-def extrapolate_fwd(history: list[deque[int]]):
+def extrapolate_fwd(history: list[deque[int]]) -> int:
     for r in history:
         r.append(0)
     for i in range(len(history)-2, -1, -1):
@@ -37,7 +37,7 @@ def extrapolate_fwd(history: list[deque[int]]):
     return history[0][-1]
 
 
-def extrapolate_bck(history: list[deque[int]]):
+def extrapolate_bck(history: list[deque[int]]) -> int:
     for r in history:
         r.appendleft(0)
     for i in range(len(history)-2, -1, -1):

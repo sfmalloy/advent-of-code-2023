@@ -30,7 +30,7 @@ def parse(file: TextIOWrapper) -> Data:
 
 
 @advent.day(3)
-def solve1(ipt: Data):
+def solve1(ipt: Data) -> int:
     total = 0
     gears = defaultdict(list)
     for num, pos in ipt.num_pos.items():
@@ -44,7 +44,7 @@ def solve1(ipt: Data):
     return total, sum(nums[0] * nums[1] for nums in gears.values() if len(nums) == 2)
 
 
-def adj_parts(pos_range: list[tuple[int, int]], ipt: Data):
+def adj_parts(pos_range: list[tuple[int, int]], ipt: Data) -> int:
     parts = set()
     for i, j in pos_range:
         for r in range(i-1,i+2):

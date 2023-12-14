@@ -17,12 +17,12 @@ REVERSED_NAME_TO_DIGIT = {k[::-1]:v for k, v in NAME_TO_DIGIT.items()}
 
 
 @advent.parser(1)
-def parse(file: TextIOWrapper):
+def parse(file: TextIOWrapper) -> list[str]:
     return [line.strip() for line in file.readlines()]
 
 
 @advent.day(1, part=1)
-def solve1(lines: list[str]):
+def solve1(lines: list[str]) -> int:
     s = 0
     for line in lines:
         dsum = ''
@@ -39,14 +39,14 @@ def solve1(lines: list[str]):
 
 
 @advent.day(1, part=2)
-def solve2(lines: list[str]):
+def solve2(lines: list[str]) -> int:
     s = 0
     for line in lines:
         s += int(find_first_digit(line) + find_last_digit(line))
     return s
 
 
-def find_first_digit(line: str):
+def find_first_digit(line: str) -> str:
     for i, c in enumerate(line):
         if c.isdigit():
             return c
@@ -59,7 +59,7 @@ def find_first_digit(line: str):
             word = line[i:i+l]
 
 
-def find_last_digit(line: str):
+def find_last_digit(line: str) -> str:
     rev = line[::-1]
     for i, c in enumerate(rev):
         if c.isdigit():

@@ -31,7 +31,7 @@ def parse(file: TextIOWrapper) -> list[list[CubeSet]]:
 
 
 @advent.day(2, part=1)
-def solve1(ipt: list[list[CubeSet]]):
+def solve1(ipt: list[list[CubeSet]]) -> int:
     red = 12
     green = 13
     blue = 14
@@ -48,7 +48,7 @@ def solve1(ipt: list[list[CubeSet]]):
 
 
 @advent.day(2, part=2)
-def solve2(ipt: list[list[CubeSet]]):
+def solve2(ipt: list[list[CubeSet]]) -> int:
     pow = 0
     for game in ipt:
         red = 0
