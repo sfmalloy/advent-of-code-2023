@@ -45,7 +45,8 @@ def count_smudges(pattern: list[str], start: int, end: int):
     while left >= 0 and right < len(pattern):
         if pattern[left] != pattern[right]:
             for l, r in zip(pattern[left], pattern[right]):
-                smudges += l != r
+                if l != r:
+                    smudges += 1
         left -= 1
         right += 1
     return smudges
