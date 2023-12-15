@@ -24,3 +24,10 @@ class Dir:
     S = Point(1, 0)
     E = Point(0, 1)
     W = Point(0, -1)
+
+
+def print_grid(grid: list[list]) -> None:
+    for row in grid:
+        for col in row:
+            print(col, end='')
+        print()
