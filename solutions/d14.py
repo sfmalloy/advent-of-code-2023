@@ -11,12 +11,7 @@ def parse(file: TextIOWrapper) -> list[list[str]]:
 @advent.day(14, part=1)
 def solve1(grid: list[list[str]]) -> int:
     tilt_north(grid)
-    load = 0
-    for r, row in enumerate(grid):
-        for col in row:
-            if col == 'O':
-                load += len(grid) - r
-    return load
+    return calculate_load(grid)
 
 
 @advent.day(14, part=2)
@@ -27,15 +22,10 @@ def solve2(grid: list[list[str]]) -> int:
     period = get_cycle(grid)
     for _ in range((1_000_000_000 - start) % period):
         grid = spin(grid)
-    load = 0
-    for r, row in enumerate(grid):
-        for col in row:
-            if col == 'O':
-                load += len(grid) - r
-    return load
+    return calculate_load(grid)
 
 
-def get_cycle(grid: list[list[int]]):
+def get_cycle(grid: list[list[str]]):
     cycle = 0
     seen = set()
     while True:
@@ -45,6 +35,15 @@ def get_cycle(grid: list[list[int]]):
         seen.add(tgrid)
         cycle += 1
         grid = spin(grid)
+
+
+def calculate_load(grid: list[list[str]]):
+    load = 0
+    for r, row in enumerate(grid):
+        for col in row:
+            if col == 'O':
+                load += len(grid) - r
+    return load
 
 
 def spin(grid: list[list[str]]) -> list[list[str]]:
