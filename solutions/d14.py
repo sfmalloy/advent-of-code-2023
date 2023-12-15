@@ -1,5 +1,6 @@
 from .lib.advent import advent
 from io import TextIOWrapper
+from math import lcm
 
 
 @advent.parser(14)
@@ -20,11 +21,11 @@ def solve1(grid: list[list[str]]) -> int:
 
 @advent.day(14, part=2)
 def solve2(grid: list[list[str]]) -> int:
-    # I have NO IDEA why this works
     start = get_cycle(grid)
     for _ in range(start):
         grid = spin(grid)
-    for _ in range(start):
+    period = get_cycle(grid)
+    for _ in range((1_000_000_000 - start) % period):
         grid = spin(grid)
     load = 0
     for r, row in enumerate(grid):
