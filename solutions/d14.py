@@ -16,16 +16,16 @@ def solve1(grid: list[list[str]]) -> int:
 
 @advent.day(14, part=2)
 def solve2(grid: list[list[str]]) -> int:
-    start = get_cycle(grid)
+    start = steps_to_repeat(grid)
     for _ in range(start):
         grid = spin(grid)
-    period = get_cycle(grid)
+    period = steps_to_repeat(grid)
     for _ in range((1_000_000_000 - start) % period):
         grid = spin(grid)
     return calculate_load(grid)
 
 
-def get_cycle(grid: list[list[str]]):
+def steps_to_repeat(grid: list[list[str]]):
     cycle = 0
     seen = set()
     while True:
