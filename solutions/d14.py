@@ -1,6 +1,5 @@
 from .lib.advent import advent
 from io import TextIOWrapper
-from math import lcm
 
 
 @advent.parser(14)
