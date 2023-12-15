@@ -21,7 +21,7 @@ def solve1(grid: list[list[str]]) -> int:
 @advent.day(14, part=2)
 def solve2(grid: list[list[str]]) -> int:
     # I have NO IDEA why this works
-    start = get_cycles(grid)
+    start = get_cycle(grid)
     for _ in range(start):
         grid = spin(grid)
     for _ in range(start):
@@ -34,7 +34,7 @@ def solve2(grid: list[list[str]]) -> int:
     return load
 
 
-def get_cycles(grid: list[list[int]]):
+def get_cycle(grid: list[list[int]]):
     cycle = 0
     seen = set()
     while True:
@@ -44,39 +44,6 @@ def get_cycles(grid: list[list[int]]):
         seen.add(tgrid)
         cycle += 1
         grid = spin(grid)
-
-
-def filter_coprimes(cycles: list[int]):
-    ordered = sorted(set(cycles))
-    coprimes = set()
-    for p in primes(ordered[-1]):
-        pow = p
-        found = True
-        while found:
-            found = False
-            for num in ordered:
-                if num % pow == 0:
-                    found = True
-                    pow *= p
-                    break
-        if pow != p:
-            coprimes.add(pow // p)
-    return coprimes
-
-
-def primes(limit: int):
-    p = 2
-    while p < limit:
-        f = 2
-        is_prime = True
-        while f * f < p:
-            if p % f == 0:
-                is_prime = False
-                break
-            f += 1
-        if is_prime:
-            yield p
-        p += 1 + (p != 2)
 
 
 def spin(grid: list[list[str]]) -> list[list[str]]:
