@@ -62,7 +62,7 @@ def energize(grid: list[list[Tile]], start: Beam):
         tile = grid[beam.pos.r][beam.pos.c]
         if len(tile.visited_by) == 0:
             num_energized += 1
-        if beam in tile.visited_by:
+        elif beam in tile.visited_by:
             continue
         tile.visited_by.add(beam)
 
