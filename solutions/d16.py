@@ -38,10 +38,12 @@ def solve2(grid: list[list[Tile]]):
         lhs = energize(grid, Beam(Point(r, 0), Dir.E))
         rhs = energize(grid, Beam(Point(r, len(grid)-1), Dir.W))
         max_energy = max(max_energy, lhs, rhs)
+
     for c in range(len(grid[0])):
         top = energize(grid, Beam(Point(0, c), Dir.S))
         bot = energize(grid, Beam(Point(len(grid[0])-1, c), Dir.N))
         max_energy = max(max_energy, top, bot)
+
     return max_energy
 
 
