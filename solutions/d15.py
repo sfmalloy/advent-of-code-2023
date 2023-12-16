@@ -4,12 +4,12 @@ from dataclasses import dataclass
 
 
 @advent.parser(15)
-def parse(file: TextIOWrapper):
+def parse(file: TextIOWrapper) -> list[str]:
     return file.read().strip().split(',')
 
 
 @advent.day(15, part=1)
-def solve1(init_sequence: list[str]):
+def solve1(init_sequence: list[str]) -> int:
     total = 0
     for step in init_sequence:
         total += box_hash(step)
@@ -23,7 +23,7 @@ class LabeledFocalLength:
 
 
 @advent.day(15, part=2)
-def solve2(init_sequence: list[str]):
+def solve2(init_sequence: list[str]) -> int:
     hashmap: list[list[LabeledFocalLength]] = [[] for _ in range(256)]
     for step in init_sequence:
         if step.endswith('-'):
@@ -50,7 +50,7 @@ def solve2(init_sequence: list[str]):
     return total
 
 
-def box_hash(step: str):
+def box_hash(step: str) -> int:
     curr = 0
     for char in step:
         curr = ((curr + ord(char)) * 17) % 256

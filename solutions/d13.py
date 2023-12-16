@@ -38,7 +38,7 @@ def search_pattern(pattern: list[list[str]], smudge_count: int) -> int:
     return 0
 
 
-def count_smudges(pattern: list[str], start: int, end: int):
+def count_smudges(pattern: list[str], start: int, end: int) -> int:
     left = start
     right = end
     smudges = 0

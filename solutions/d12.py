@@ -11,7 +11,7 @@ class Record:
 
 
 @advent.parser(12)
-def parse(file: TextIOWrapper):
+def parse(file: TextIOWrapper) -> list[Record]:
     return [(lambda record, sizes: Record(record, tuple(map(int, sizes.split(',')))))(*line.strip().split()) 
             for line in file.readlines()]
 

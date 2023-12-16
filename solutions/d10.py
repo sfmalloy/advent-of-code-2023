@@ -35,13 +35,13 @@ class Node:
 
 
 @dataclass
-class Data:
+class MazeData:
     start: Node
     grid: list[list[Node]]
 
 
 @advent.parser(10)
-def parse(file: TextIOWrapper) -> Data:
+def parse(file: TextIOWrapper) -> MazeData:
     lines = [line.strip() for line in file.readlines()]
     grid: list[list[Optional[Node]]] = []
     start = None
@@ -90,11 +90,11 @@ def parse(file: TextIOWrapper) -> Data:
     for pos in to_remove:
         grid[pos.r][pos.c] = None
 
-    return Data(start, grid)
+    return MazeData(start, grid)
 
 
 @advent.day(10, part=1)
-def solve1(ipt: Data) -> int:
+def solve1(ipt: MazeData) -> int:
     # Simple dijsktra's. Parser does most of the work for this part.
     far = 0
     q = deque([ipt.start])
@@ -110,7 +110,7 @@ def solve1(ipt: Data) -> int:
 
 
 @advent.day(10, part=2, reparse=False)
-def solve2(ipt: Data) -> int:
+def solve2(ipt: MazeData) -> int:
     # Remove any extra pipes that aren't part of the MAIN loop
     for r, row in enumerate(ipt.grid):
         for c, node in enumerate(row):

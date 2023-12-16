@@ -22,17 +22,17 @@ class Tile:
 
 
 @advent.parser(16)
-def parse(file: TextIOWrapper):
+def parse(file: TextIOWrapper) -> list[list[Tile]]:
     return [list(map(Tile, line.strip())) for line in file.readlines()]
 
 
 @advent.day(16, part=1)
-def solve1(grid: list[list[Tile]]):
+def solve1(grid: list[list[Tile]]) -> int:
     return energize(grid, Beam(Point(0, 0), Dir.E))
 
 
 @advent.day(16, part=2)
-def solve2(grid: list[list[Tile]]):
+def solve2(grid: list[list[Tile]]) -> int:
     max_energy = 0
     for r in range(len(grid)):
         lhs = energize(grid, Beam(Point(r, 0), Dir.E))
@@ -53,7 +53,7 @@ def reset_grid(grid: list[list[Tile]]):
             tile.reset()
 
 
-def energize(grid: list[list[Tile]], start: Beam):
+def energize(grid: list[list[Tile]], start: Beam) -> int:
     q = deque([start])
     num_energized = 0
     while len(q) > 0:

@@ -8,23 +8,23 @@ from collections import deque
 
 
 @dataclass
-class Data:
+class DocumentData:
     dirs: list[int]
     nodes: dict[str, tuple[int, int]]
 
 
 @advent.parser(8)
-def parse(file: TextIOWrapper) -> Data:
+def parse(file: TextIOWrapper) -> DocumentData:
     dirs, nodes = file.read().split('\n\n')
     parsed_nodes = {}
     for line in nodes.split('\n')[:-1]:
         src, left, right = re.findall(r'([0-9A-Z]{3})', line)
         parsed_nodes[src] = (left, right)
-    return Data([int(d == 'R') for d in dirs], parsed_nodes)
+    return DocumentData([int(d == 'R') for d in dirs], parsed_nodes)
 
 
 @advent.day(8, part=1)
-def solve1(ipt: Data) -> int:
+def solve1(ipt: DocumentData) -> int:
     dist = 0
     curr = 'AAA'
     L = len(ipt.dirs)
@@ -36,7 +36,7 @@ def solve1(ipt: Data) -> int:
 
 
 @advent.day(8, part=2)
-def solve2(ipt: Data) -> int:
+def solve2(ipt: DocumentData) -> int:
     q = deque([])
     for name in ipt.nodes:
         if name[2] == 'A':

@@ -4,7 +4,7 @@ from collections import deque
 
 
 @advent.parser(9)
-def parse(file: TextIOWrapper):
+def parse(file: TextIOWrapper) -> list[deque[int]]:
     return [deque(map(int, line.strip().split())) for line in file.readlines()]
 
 

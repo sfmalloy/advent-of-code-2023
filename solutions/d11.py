@@ -11,7 +11,7 @@ class CosmicData:
 
 
 @advent.parser(11)
-def parse(file: TextIOWrapper):
+def parse(file: TextIOWrapper) -> CosmicData:
     grid = [list(map(str, line.strip())) for line in file.readlines()]
 
     galaxies = []
