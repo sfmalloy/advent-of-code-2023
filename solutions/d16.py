@@ -53,12 +53,15 @@ def reset_grid(grid: list[list[Tile]]):
 
 def energize(grid: list[list[Tile]], start: Beam):
     q = deque([start])
+    num_energized = 0
     while len(q) > 0:
         beam = q.pop()
         if not beam.pos.in_bounds(grid):
             continue
 
         tile = grid[beam.pos.r][beam.pos.c]
+        if len(tile.visited_by) == 0:
+            num_energized += 1
         if beam in tile.visited_by:
             continue
         tile.visited_by.add(beam)
@@ -68,52 +71,42 @@ def energize(grid: list[list[Tile]], start: Beam):
                 # split into 2 beams N and S
                 q.append(Beam(beam.pos + Dir.N, Dir.N))
                 q.append(Beam(beam.pos + Dir.S, Dir.S))
-                pass
             case ['-', Dir.N] | ['-', Dir.S]:
                 # split into 2 beams E and W
                 q.append(Beam(beam.pos + Dir.E, Dir.E))
                 q.append(Beam(beam.pos + Dir.W, Dir.W))
-                pass
             case ['/', Dir.N]:
                 # bounce E
                 q.append(Beam(beam.pos + Dir.E, Dir.E))
-                pass
             case ['/', Dir.S]:
                 # bounce W
                 q.append(Beam(beam.pos + Dir.W, Dir.W))
-                pass
             case ['/', Dir.E]:
                 # bounce N
                 q.append(Beam(beam.pos + Dir.N, Dir.N))
-                pass
             case ['/', Dir.W]:
                 # bounce S
                 q.append(Beam(beam.pos + Dir.S, Dir.S))
-                pass
             case ['\\', Dir.N]:
                 # bounce W
                 q.append(Beam(beam.pos + Dir.W, Dir.W))
-                pass
             case ['\\', Dir.S]:
                 # bounce E
                 q.append(Beam(beam.pos + Dir.E, Dir.E))
-                pass
             case ['\\', Dir.E]:
                 # bounce S
                 q.append(Beam(beam.pos + Dir.S, Dir.S))
-                pass
             case ['\\', Dir.W]:
                 # bounce N
                 q.append(Beam(beam.pos + Dir.N, Dir.N))
-                pass
             case [_, _]:
                 # otherwise keep going in current direction
                 q.append(Beam(beam.pos + beam.dir, beam.dir))
     
-    num_energized = 0
-    for row in grid:
-        for tile in row:
-            if len(tile.visited_by) > 0:
-                num_energized += 1
+    # num_energized = 0
+    # for row in grid:
+    #     for tile in row:
+    #         if len(tile.visited_by) > 0:
+    #             num_energized += 1
     reset_grid(grid)
     return num_energized
