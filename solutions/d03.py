@@ -5,13 +5,13 @@ from collections import defaultdict
 
 
 @dataclass
-class Data:
+class EngineData:
     num_pos: defaultdict[int, list[tuple[int, int]]]
     grid: list[str]
 
 
 @advent.parser(3)
-def parse(file: TextIOWrapper) -> Data:
+def parse(file: TextIOWrapper) -> EngineData:
     num_pos = defaultdict(list)
     # add a '.' to the end of each line to cover for if a number ends on an edge
     lines = [line.strip() + '.' for line in file.readlines()]
@@ -26,11 +26,11 @@ def parse(file: TextIOWrapper) -> Data:
                 num_pos[int(num)].append(pos)
                 num = ''
                 pos = []
-    return Data(num_pos, lines)
+    return EngineData(num_pos, lines)
 
 
 @advent.day(3)
-def solve1(ipt: Data) -> int:
+def solve1(ipt: EngineData) -> int:
     total = 0
     gears = defaultdict(list)
     for num, pos in ipt.num_pos.items():
@@ -44,7 +44,7 @@ def solve1(ipt: Data) -> int:
     return total, sum(nums[0] * nums[1] for nums in gears.values() if len(nums) == 2)
 
 
-def adj_parts(pos_range: list[tuple[int, int]], ipt: Data) -> int:
+def adj_parts(pos_range: list[tuple[int, int]], ipt: EngineData) -> int:
     parts = set()
     for i, j in pos_range:
         for r in range(i-1,i+2):
