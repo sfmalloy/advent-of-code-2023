@@ -24,7 +24,7 @@ def solve2(grid: list[list[str]]) -> int:
     return calculate_load(grid)
 
 
-def steps_to_repeat(grid: list[list[str]]):
+def steps_to_repeat(grid: list[list[str]]) -> int:
     cycle = 0
     seen = set()
     while True:
@@ -36,7 +36,7 @@ def steps_to_repeat(grid: list[list[str]]):
         grid = spin(grid)
 
 
-def calculate_load(grid: list[list[str]]):
+def calculate_load(grid: list[list[str]]) -> int:
     load = 0
     for r, row in enumerate(grid):
         for col in row:
