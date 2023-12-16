@@ -103,10 +103,5 @@ def energize(grid: list[list[Tile]], start: Beam):
                 # otherwise keep going in current direction
                 q.append(Beam(beam.pos + beam.dir, beam.dir))
     
-    # num_energized = 0
-    # for row in grid:
-    #     for tile in row:
-    #         if len(tile.visited_by) > 0:
-    #             num_energized += 1
     reset_grid(grid)
     return num_energized
