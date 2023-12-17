@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Self
-from enum import Enum
+
 
 @dataclass(frozen=True, eq=True)
 class Point:
@@ -28,6 +28,24 @@ class Dir:
     S = Point(1, 0)
     E = Point(0, 1)
     W = Point(0, -1)
+
+    _opposite = {
+        N: S,
+        S: N,
+        E: W,
+        W: E
+    }
+
+    _all = {N, S, E, W}
+
+    @staticmethod
+    def opposite(d: Self):
+        return Dir._opposite[d]
+    
+    @staticmethod
+    def all():
+        return Dir._all
+    
 
 
 def print_grid(grid: list[list]) -> None:

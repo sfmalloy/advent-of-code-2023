@@ -11,12 +11,11 @@ INF = 2**31-1
 class Crucible:
     pos: Point
     dir: Dir
-    dist: int
+    heat_loss: int
     dir_dist: int = 0
-    path: list = field(default_factory=list)
 
     def __lt__(self, other):
-        return self.dist < other.dist
+        return self.heat_loss < other.heat_loss
 
 
 @dataclass
@@ -35,46 +34,49 @@ def parse(file: TextIOWrapper) -> list[list[Block]]:
 
 @advent.day(17, part=1)
 def solve1(grid: list[list[Block]]):
-    all_dirs = {Dir.N, Dir.S, Dir.E, Dir.W}
-    opposite = {
-        Dir.N: Dir.S,
-        Dir.S: Dir.N,
-        Dir.W: Dir.E,
-        Dir.E: Dir.W
-    }
-    
     start = Crucible(Point(0, 0), Dir.E, 0)
     q: PriorityQueue[Crucible] = PriorityQueue()
     q.put(start)
+    
     dists = defaultdict(lambda: INF)
-
     goal = grid[-1][-1].pos
-    min_heat_loss = INF
 
     while not q.empty():
         crucible = q.get()
         if crucible.pos == goal:
-            return crucible.dist
-        for dir in all_dirs - {opposite[crucible.dir]}:
+            return crucible.heat_loss
+        for dir in Dir.all() - {Dir.opposite(crucible.dir)}:
             if (dir == crucible.dir and crucible.dir_dist < 3) or dir != crucible.dir:
                 pos = crucible.pos + dir
                 if pos.in_bounds(grid):
-                    next_block = grid[pos.r][pos.c]
-                    new_dir_dist = (crucible.dir_dist + 1) if crucible.dir == dir else 1
-                    if crucible.dist + next_block.cost < dists[(pos, dir, new_dir_dist)]:
-                        dists[(pos, dir, new_dir_dist)] = crucible.dist + next_block.cost
-                        q.put(Crucible(
-                            pos,
-                            dir,
-                            crucible.dist + next_block.cost,
-                            new_dir_dist,
-                            crucible.path + [pos]
-                        ))
-    return min_heat_loss
+                    dir_dist = (crucible.dir_dist + 1) if crucible.dir == dir else 1
+                    heat_loss = crucible.heat_loss + grid[pos.r][pos.c].cost
+                    if heat_loss < dists[(pos, dir, dir_dist)]:
+                        dists[(pos, dir, dir_dist)] = heat_loss
+                        q.put(Crucible(pos, dir, heat_loss, dir_dist))
 
 @advent.day(17, part=2)
-def solve2(ipt):
-    return 0
+def solve2(grid: list[list[Block]]):
+    start = Crucible(Point(0, 0), Dir.E, 0)
+    q: PriorityQueue[Crucible] = PriorityQueue()
+    q.put(start)
+    
+    dists = defaultdict(lambda: INF)
+    goal = grid[-1][-1].pos
+
+    while not q.empty():
+        crucible = q.get()
+        if crucible.pos == goal:
+            return crucible.heat_loss
+        for dir in Dir.all() - {Dir.opposite(crucible.dir)}:
+            if (dir == crucible.dir and crucible.dir_dist < 10) or (dir != crucible.dir and crucible.dir_dist >= 4):
+                pos = crucible.pos + dir
+                if pos.in_bounds(grid):
+                    dir_dist = (crucible.dir_dist + 1) if crucible.dir == dir else 1
+                    heat_loss = crucible.heat_loss + grid[pos.r][pos.c].cost
+                    if heat_loss < dists[(pos, dir, dir_dist)]:
+                        dists[(pos, dir, dir_dist)] = heat_loss
+                        q.put(Crucible(pos, dir, heat_loss, dir_dist))
 
 
 def print_path(grid: list[list[Block]], path: list[Point]):
