@@ -1,7 +1,7 @@
 from .lib.advent import advent
 from .lib.util import Point, Dir
 from io import TextIOWrapper
-from collections import deque, defaultdict
+from collections import defaultdict
 from dataclasses import dataclass, field
 from queue import PriorityQueue
 
@@ -44,7 +44,6 @@ def solve1(grid: list[list[Block]]):
     }
     
     start = Crucible(Point(0, 0), Dir.E, 0)
-    # q = deque([start])
     q: PriorityQueue[Crucible] = PriorityQueue()
     q.put(start)
     dists = defaultdict(lambda: INF)
@@ -52,28 +51,23 @@ def solve1(grid: list[list[Block]]):
     goal = grid[-1][-1].pos
     min_heat_loss = INF
 
-    # while len(q) > 0:
     while not q.empty():
-        # crucible = q.popleft()
         crucible = q.get()
         if crucible.pos == goal:
-            min_heat_loss = min(crucible.dist, min_heat_loss)
-            continue
-        if dists[(crucible.pos, crucible.dir, crucible.dir_dist)] < crucible.dist:
-            continue
-
+            return crucible.dist
         for dir in all_dirs - {opposite[crucible.dir]}:
             if (dir == crucible.dir and crucible.dir_dist < 3) or dir != crucible.dir:
                 pos = crucible.pos + dir
                 if pos.in_bounds(grid):
                     next_block = grid[pos.r][pos.c]
-                    if crucible.dist + next_block.cost < dists[(pos, dir, crucible.dir_dist)]:
-                        dists[(pos, dir, crucible.dir_dist)] = crucible.dist + next_block.cost
+                    new_dir_dist = (crucible.dir_dist + 1) if crucible.dir == dir else 1
+                    if crucible.dist + next_block.cost < dists[(pos, dir, new_dir_dist)]:
+                        dists[(pos, dir, new_dir_dist)] = crucible.dist + next_block.cost
                         q.put(Crucible(
                             pos,
                             dir,
                             crucible.dist + next_block.cost,
-                            (crucible.dir_dist + 1) if crucible.dir == dir else 1,
+                            new_dir_dist,
                             crucible.path + [pos]
                         ))
     return min_heat_loss
