@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Self
+from enum import Enum
 
 @dataclass(frozen=True, eq=True)
 class Point:
@@ -17,6 +18,9 @@ class Point:
 
     def mdist(self, other):
         return abs(self.r - other.r) + abs(self.c - other.c)
+    
+    def __repr__(self) -> str:
+        return f'({self.r}, {self.c})'
 
 
 class Dir:
