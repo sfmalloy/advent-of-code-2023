@@ -3,6 +3,7 @@ from .lib.util import Point, Dir
 from io import TextIOWrapper
 from collections import deque, defaultdict
 from dataclasses import dataclass, field
+from queue import PriorityQueue
 
 INF = 2**31-1
 
@@ -13,6 +14,9 @@ class Crucible:
     dist: int
     dir_dist: int = 0
     path: list = field(default_factory=list)
+
+    def __lt__(self, other):
+        return self.dist < other.dist
 
 
 @dataclass
@@ -40,14 +44,18 @@ def solve1(grid: list[list[Block]]):
     }
     
     start = Crucible(Point(0, 0), Dir.E, 0)
-    q = deque([start])
+    # q = deque([start])
+    q: PriorityQueue[Crucible] = PriorityQueue()
+    q.put(start)
     dists = defaultdict(lambda: INF)
 
     goal = grid[-1][-1].pos
     min_heat_loss = INF
 
-    while len(q) > 0:
-        crucible = q.popleft()
+    # while len(q) > 0:
+    while not q.empty():
+        # crucible = q.popleft()
+        crucible = q.get()
         if crucible.pos == goal:
             min_heat_loss = min(crucible.dist, min_heat_loss)
             continue
@@ -61,7 +69,7 @@ def solve1(grid: list[list[Block]]):
                     next_block = grid[pos.r][pos.c]
                     if crucible.dist + next_block.cost < dists[(pos, dir, crucible.dir_dist)]:
                         dists[(pos, dir, crucible.dir_dist)] = crucible.dist + next_block.cost
-                        q.append(Crucible(
+                        q.put(Crucible(
                             pos,
                             dir,
                             crucible.dist + next_block.cost,
