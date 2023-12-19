@@ -52,6 +52,7 @@ def solve2(edges: list[Edge]):
         corners.append(pos)
     return calculate_area(corners)
 
+
 # https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
 def calculate_area(vertices: deque[Vec2]) -> int:
     triangles = set()
