@@ -57,9 +57,9 @@ def solve2(edges: list[Edge]):
 def calculate_area(vertices: deque[Vec2]) -> int:
     triangles = set()
     i = 0
-    perimiter = 0
+    perimeter = 0
     for i in range(len(vertices)):
-        perimiter += vertices[(i+1) % len(vertices)].dist(vertices[i])
+        perimeter += vertices[(i+1) % len(vertices)].dist(vertices[i])
 
     while len(vertices) > 3:
         for i in range(len(vertices)):
@@ -78,8 +78,7 @@ def calculate_area(vertices: deque[Vec2]) -> int:
         tri_area += triangle_area(a, b, c)
 
     # https://en.wikipedia.org/wiki/Pick%27s_theorem
-    area = tri_area - (perimiter / 2) + 1
-    return round(area + perimiter)
+    return round(tri_area + (perimeter / 2) + 1)
 
 
 # https://stackoverflow.com/questions/21483999/using-atan2-to-find-angle-between-two-vectors
