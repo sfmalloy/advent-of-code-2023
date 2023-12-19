@@ -1,5 +1,5 @@
 from .lib.advent import advent
-from .lib.util import Point, Dir
+from .lib.util import Point, PointDir
 from io import TextIOWrapper
 from dataclasses import dataclass, field
 from typing import Self, Optional
@@ -143,10 +143,10 @@ def solve2(ipt: MazeData) -> int:
         for c, col in enumerate(row):
             pos = Point(r, c)
             if col == filler:
-                north = pos + Dir.N
+                north = pos + PointDir.N
                 if north.in_bounds(symbols) and symbols[north.r][north.c] in '|7F':
                     symbols[r][c] = '|'
-                east = pos + Dir.E
+                east = pos + PointDir.E
                 if east.in_bounds(symbols) and symbols[east.r][east.c] in '-7J':
                     symbols[r][c] = '-'
 
@@ -157,19 +157,19 @@ def solve2(ipt: MazeData) -> int:
         pos = q.pop()
         symbols[pos.r][pos.c] = 'O'
 
-        north = pos + Dir.N
+        north = pos + PointDir.N
         if north.in_bounds(symbols) and symbols[north.r][north.c] in '.*':
             q.append(north)
 
-        south = pos + Dir.S
+        south = pos + PointDir.S
         if south.in_bounds(symbols) and symbols[south.r][south.c] in '.*':
             q.append(south)
 
-        west = pos + Dir.W
+        west = pos + PointDir.W
         if west.in_bounds(symbols) and symbols[west.r][west.c] in '.*':
             q.append(west)
 
-        east = pos + Dir.E
+        east = pos + PointDir.E
         if east.in_bounds(symbols) and symbols[east.r][east.c] in '.*':
             q.append(east)
 
@@ -183,31 +183,31 @@ def find_start_symbol(start: Node) -> str:
     for n in start.neighbors:
         dirs.append(n.pos - start.pos)
 
-    if dirs[0] == Dir.N:
-        if dirs[1] == Dir.S:
+    if dirs[0] == PointDir.N:
+        if dirs[1] == PointDir.S:
             return '|'
-        elif dirs[1] == Dir.E:
+        elif dirs[1] == PointDir.E:
             return 'L'
-        elif dirs[1] == Dir.W:
+        elif dirs[1] == PointDir.W:
             return 'J'
-    elif dirs[0] == Dir.S:
-        if dirs[1] == Dir.N:
+    elif dirs[0] == PointDir.S:
+        if dirs[1] == PointDir.N:
             return '|'
-        elif dirs[1] == Dir.E:
+        elif dirs[1] == PointDir.E:
             return 'F'
-        elif dirs[1] == Dir.W:
+        elif dirs[1] == PointDir.W:
             return '7'
-    elif dirs[0] == Dir.E:
-        if dirs[1] == Dir.W:
+    elif dirs[0] == PointDir.E:
+        if dirs[1] == PointDir.W:
             return '-'
-        elif dirs[1] == Dir.N:
+        elif dirs[1] == PointDir.N:
             return 'L'
-        elif dirs[1] == Dir.S:
+        elif dirs[1] == PointDir.S:
             return 'F'
-    elif dirs[0] == Dir.W:
-        if dirs[1] == Dir.E:
+    elif dirs[0] == PointDir.W:
+        if dirs[1] == PointDir.E:
             return '-'
-        elif dirs[1] == Dir.N:
+        elif dirs[1] == PointDir.N:
             return 'J'
-        elif dirs[1] == Dir.S:
+        elif dirs[1] == PointDir.S:
             return '7'

@@ -1,5 +1,5 @@
 from .lib.advent import advent
-from .lib.util import Point, Dir
+from .lib.util import Point, PointDir
 from io import TextIOWrapper
 from collections import defaultdict
 from dataclasses import dataclass
@@ -10,7 +10,7 @@ INF = 2**31-1
 @dataclass
 class Crucible:
     pos: Point
-    dir: Dir
+    dir: PointDir
     heat_loss: int
     dir_dist: int = 0
 
@@ -41,7 +41,7 @@ def solve2(grid: list[list[Block]]):
 
 
 def follow_path(grid: list[list[Block]], max_dir_dist: int, min_dir_dist: int=1):
-    start = Crucible(Point(0, 0), Dir.E, 0)
+    start = Crucible(Point(0, 0), PointDir.E, 0)
     q: PriorityQueue[Crucible] = PriorityQueue()
     q.put(start)
 
@@ -52,7 +52,7 @@ def follow_path(grid: list[list[Block]], max_dir_dist: int, min_dir_dist: int=1)
         crucible = q.get()
         if crucible.pos == goal:
             return crucible.heat_loss
-        for dir in Dir.all() - {Dir.opposite(crucible.dir)}:
+        for dir in PointDir.all() - {PointDir.opposite(crucible.dir)}:
             if (dir == crucible.dir and crucible.dir_dist < max_dir_dist) or (dir != crucible.dir and crucible.dir_dist >= min_dir_dist):
                 pos = crucible.pos + dir
                 if pos.in_bounds(grid):
