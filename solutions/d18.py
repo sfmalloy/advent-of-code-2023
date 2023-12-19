@@ -82,6 +82,7 @@ def calculate_area(vertices: deque[Vec2]) -> int:
     return round(area + perimiter)
 
 
+# https://stackoverflow.com/questions/21483999/using-atan2-to-find-angle-between-two-vectors
 def interior_angle_radians(a: Vec2, b: Vec2, c: Vec2) -> float:
     ba = b - a
     cb = c - b
@@ -103,6 +104,7 @@ def vertex_in_triangle(test: Vec2, a: Vec2, b: Vec2, c: Vec2):
     return sum_area == area
 
 
+# also got area formula from link above
 def triangle_area(a: Vec2, b: Vec2, c: Vec2):
     ab = b - a
     ac = c - a
