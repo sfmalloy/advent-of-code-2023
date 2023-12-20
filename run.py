@@ -88,6 +88,7 @@ def generate_new_file(day_number):
         with open(path, 'w') as f:
             f.write(f'''from .lib.advent import advent
 from io import TextIOWrapper
+from dataclasses import dataclass
 
 
 @advent.parser({day_number})
