@@ -120,7 +120,7 @@ def solve2(modules: dict[str, Module]):
         to_remove = set()
         for m in checks:
             hi_pulses = modules[m].hi_pulses.values()
-            if len(hi_pulses) == len(modules[m].inputs) and all(len(v) == 2 for v in modules[m].hi_pulses.values()):
+            if len(hi_pulses) == len(modules[m].inputs) and all(len(pulses) == 2 for pulses in hi_pulses):
                 for a, b in hi_pulses:
                     nums[m].add(b - a)
                 to_remove.add(m)
