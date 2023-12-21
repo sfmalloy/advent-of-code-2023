@@ -2,11 +2,9 @@ import math
 from .lib.advent import advent
 from io import TextIOWrapper
 from dataclasses import dataclass, field
-from typing import Self
 from abc import abstractmethod
 from collections import defaultdict, deque
 
-N = 2
 
 @dataclass
 class Module:
@@ -45,7 +43,7 @@ class ConjunctionModule(Module):
 
     def receive(self, src: str, pulse: bool, button_press: int=0) -> deque[tuple[str, bool]]:
         self.input_pulses[src] = pulse
-        if len(self.hi_pulses[src]) < N and self.input_pulses[src] == Module.hi:
+        if len(self.hi_pulses[src]) < 2 and self.input_pulses[src] == Module.hi:
             self.hi_pulses[src].append(button_press)
         all_hi = True
         for name in self.inputs:
@@ -122,7 +120,7 @@ def solve2(modules: dict[str, Module]):
         to_remove = set()
         for m in checks:
             hi_pulses = modules[m].hi_pulses.values()
-            if len(hi_pulses) == len(modules[m].inputs) and all(len(v) == N for v in modules[m].hi_pulses.values()):
+            if len(hi_pulses) == len(modules[m].inputs) and all(len(v) == 2 for v in modules[m].hi_pulses.values()):
                 for a, b in hi_pulses:
                     nums[m].add(b - a)
                 to_remove.add(m)
@@ -146,19 +144,3 @@ def push_button(modules: dict[str, Module], press: int=0):
             lo += 1
         q += modules[dst].receive(src, pulse, press)
     return lo, hi
-
-
-def get_paths(modules: dict[str, Module]):
-    init_q = modules['broadcaster'].send(False)
-    q = deque([])
-    for node in init_q:
-        q.append((*node, ['broadcaster']))
-    paths = set()
-    while len(q) > 0:
-        src, dst, pulse, path = q.popleft()
-        for s, d, p in modules[dst].receive(src, pulse):
-            q.append((s, d, p, path + [s]))
-        if dst == 'rx':
-            paths.add(tuple(path))
-    return paths
-
