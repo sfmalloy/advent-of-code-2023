@@ -1,13 +1,11 @@
 import re
-import itertools
 import operator
-from .lib.advent import advent
 from io import TextIOWrapper
 from dataclasses import dataclass
 from typing import Optional
 from functools import reduce
-import math
 
+from .lib.advent import advent
 
 @dataclass
 class Workflow:
@@ -73,15 +71,7 @@ def solve1(ipt: PartWorkflows):
 
 @advent.day(19, part=2)
 def solve2(ipt: PartWorkflows):
-    possible = { part: frozenset(i for i in range(1, 4001)) for part in 'xmas' }
-    combos = get_combos(ipt.workflows, 'in', possible)
-    total = 0
-    for combo in combos:
-        prod = 1
-        for rg in combo.values():
-            prod *= len(rg)
-        total += prod
-    return total
+    return get_combos(ipt.workflows, 'in', { part: frozenset(i for i in range(1, 4001)) for part in 'xmas' })
 
 
 def evaluate(workflows: dict[str, list[Workflow]], part: dict[str, int]):
@@ -102,11 +92,11 @@ def evaluate(workflows: dict[str, list[Workflow]], part: dict[str, int]):
 
 def get_combos(workflows: dict[str, list[Workflow]], name: str, accepted: dict[str, frozenset[int]]):
     if name == 'A':
-        return [accepted]
+        return reduce(operator.mul, map(len, accepted.values()), 1)
     elif name == 'R':
-        return []
+        return 0
     
-    combos = []
+    combos = 0
     completed_tests: list[Workflow] = []
     for test in workflows[name]:
         new_accepted = {k:v for k,v in accepted.items()}
