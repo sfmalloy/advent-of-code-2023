@@ -63,8 +63,6 @@ def solve2(grid: list[list[str]]):
         curr, L, visited = q.pop()
         if curr == end:
             best = max(L, best)
-            if best == L:
-                print(best)
             continue
         for neighbor in condensed[curr]:
             if neighbor not in visited:
