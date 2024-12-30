@@ -44,7 +44,7 @@ def solve2(init_sequence: list[str]) -> int:
     
     total = 0
     for b, box in enumerate(hashmap, start=1):
-        if len(box) > 0:
+        if box:
             for slot, length in enumerate(box, start=1):
                 total += b * slot * length.focal_length
     return total
@@ -53,7 +53,7 @@ def solve2(init_sequence: list[str]) -> int:
 def box_hash(step: str) -> int:
     curr = 0
     for char in step:
-        curr = ((curr + ord(char)) * 17) % 256
+        curr = (curr + ord(char))*17 % 256
     return curr
 
 

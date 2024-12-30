@@ -32,31 +32,29 @@ def parse(file: TextIOWrapper):
 @advent.day(18, part=1)
 def solve1(edges: list[Edge]):
     pos = Vec2(0, 0)
-    vertices: deque[Vec2] = deque([])
+    vertices: deque[Vec2] = deque()
     for edge in edges:
         pos += edge.dist * edge.dir
         vertices.append(pos)
-    area = calculate_area(vertices)
-    return area
+    return calculate_area(vertices)
 
 
 @advent.day(18, part=2)
 def solve2(edges: list[Edge]):
     dirs = [Vec2Dir.R, Vec2Dir.D, Vec2Dir.L, Vec2Dir.U]
     pos = Vec2(0, 0)
-    corners: list[Vec2] = list()
+    vertices: deque[Vec2] = deque()
     for edge in edges:
         dir = dirs[edge.color & 15]
         dist = edge.color >> 4
         pos += dist * dir
-        corners.append(pos)
-    return calculate_area(corners)
+        vertices.append(pos)
+    return calculate_area(vertices)
 
 
 # https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
 def calculate_area(vertices: deque[Vec2]) -> int:
     triangles = set()
-    i = 0
     perimeter = 0
     for i in range(len(vertices)):
         perimeter += vertices[(i+1) % len(vertices)].dist(vertices[i])
@@ -71,22 +69,18 @@ def calculate_area(vertices: deque[Vec2]) -> int:
                 vertices.remove(b)
                 break
 
-    tri_area = 0
     triangles.add((vertices[0], vertices[1], vertices[2]))
-    for t in triangles:
-        a, b, c = t
-        tri_area += triangle_area(a, b, c)
+    tri_area = sum(triangle_area(t[0], t[1], t[2]) for t in triangles)
 
     # https://en.wikipedia.org/wiki/Pick%27s_theorem
     return round(tri_area + (perimeter / 2) + 1)
 
 
-# https://stackoverflow.com/questions/21483999/using-atan2-to-find-angle-between-two-vectors
-def interior_angle_radians(a: Vec2, b: Vec2, c: Vec2) -> float:
-    ba = b - a
-    cb = c - b
-    angle = math.atan2(ba.y, ba.x) - math.atan2(cb.y, cb.x)
-    return angle
+def is_ear(vertices: deque[Vec2], a: Vec2, b: Vec2, c: Vec2) -> bool:
+    for v in vertices:
+        if v != a and v != b and v != c and vertex_in_triangle(v, a, b, c):
+            return False
+    return True
 
 
 def is_convex(a: Vec2, b: Vec2, c: Vec2) -> bool:
@@ -96,22 +90,18 @@ def is_convex(a: Vec2, b: Vec2, c: Vec2) -> bool:
     return angle < 180
 
 
+# https://stackoverflow.com/questions/21483999/using-atan2-to-find-angle-between-two-vectors
+def interior_angle_radians(a: Vec2, b: Vec2, c: Vec2) -> float:
+    ba = b - a
+    cb = c - b
+    return math.atan2(ba.y, ba.x) - math.atan2(cb.y, cb.x)
+
+
 # https://www.baeldung.com/cs/check-if-point-is-in-2d-triangle
 def vertex_in_triangle(test: Vec2, a: Vec2, b: Vec2, c: Vec2):
-    area = triangle_area(a, b, c)
-    sum_area = triangle_area(test, a, b) + triangle_area(test, b, c) + triangle_area(test, c, a)
-    return sum_area == area
+    return triangle_area(a, b, c) == (triangle_area(test, a, b) + triangle_area(test, b, c) + triangle_area(test, c, a))
 
 
-# also got area formula from link above
+# https://www.baeldung.com/cs/check-if-point-is-in-2d-triangle
 def triangle_area(a: Vec2, b: Vec2, c: Vec2):
-    ab = b - a
-    ac = c - a
-    return abs(ab.cross(ac)) / 2
-
-
-def is_ear(vertices: deque[Vec2], a: Vec2, b: Vec2, c: Vec2) -> bool:
-    for v in vertices:
-        if v != a and v != b and v != c and vertex_in_triangle(v, a, b, c):
-            return False
-    return True
+    return abs((b - a).cross(c - a)) / 2

@@ -135,15 +135,12 @@ class PointDir:
     }
 
     _all = {N, S, E, W}
+    all = {N, S, E, W}
 
     @staticmethod
     def opposite(d: Self):
         return PointDir._opposite[d]
     
-    @staticmethod
-    def all():
-        return PointDir._all
-
 
 class Vec2Dir:
     N = Vec2(0, 1)
@@ -163,15 +160,12 @@ class Vec2Dir:
         W: E
     }
 
-    _all = {N, S, E, W}
+    all = {N, S, E, W}
 
     @staticmethod
     def opposite(d: Self):
         return Vec2._opposite[d]
     
-    @staticmethod
-    def all():
-        return Vec2._all
 
 def print_grid(grid: list[list]) -> None:
     for row in grid:

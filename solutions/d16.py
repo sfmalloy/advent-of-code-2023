@@ -17,7 +17,7 @@ class Tile:
     visited_by: set[int] = field(default_factory=set)
 
     def reset(self):
-        if len(self.visited_by) > 0:
+        if self.visited_by:
             self.visited_by.clear()
 
 
@@ -56,13 +56,13 @@ def reset_grid(grid: list[list[Tile]]):
 def energize(grid: list[list[Tile]], start: Beam) -> int:
     q = deque([start])
     num_energized = 0
-    while len(q) > 0:
+    while q:
         beam = q.pop()
         if not beam.pos.in_bounds(grid):
             continue
 
         tile = grid[beam.pos.r][beam.pos.c]
-        if len(tile.visited_by) == 0:
+        if not tile.visited_by:
             num_energized += 1
         elif beam in tile.visited_by:
             continue

@@ -73,7 +73,7 @@ def exact_dist_points(ipt: Garden, S: int):
         if steps % 2 == is_even:
             final.add(pos)
         seen.add(pos)
-        for d in PointDir.all():
+        for d in PointDir.all:
             new = pos + d
             if ipt.garden[new.r % L][new.c % L] == '.':
                 q.append((new, steps + 1))
