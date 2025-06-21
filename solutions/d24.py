@@ -42,8 +42,15 @@ def solve1(hailstones: list[Hailstone]):
                 x = ((b.pos.y - a.pos.y) - (rb*b.pos.x - ra*a.pos.x)) / (ra - rb)
                 y = (x-a.pos.x) * ra + a.pos.y
 
-                if x >= lower_bound and y >= lower_bound and x <= upper_bound and y <= upper_bound:
-                    total += (x-a.pos.x) / a.vel.x >= 0 and (x-b.pos.x) / b.vel.x >= 0
+                if (
+                    x >= lower_bound 
+                    and y >= lower_bound 
+                    and x <= upper_bound 
+                    and y <= upper_bound
+                    and (x-a.pos.x) / a.vel.x >= 0
+                    and (x-b.pos.x) / b.vel.x >= 0
+                ):
+                    total += 1
     return total
 
 
@@ -52,16 +59,14 @@ def solve2(hailstones: list[Hailstone]):
     # Maybe someday I'll implement a vanilla solution. Not today though
     x, y, z, vx, vy, vz = z3.Ints('x y z vx vy vz')
     s = z3.Solver()
-
     ts = []
     for i, h in enumerate(hailstones):
         t = z3.Int(f't{i}')
         ts.append(t)
-        s.add(
-            h.pos.x + h.vel.x*t == x + vx*t,
-            h.pos.y + h.vel.y*t == y + vy*t,
-            h.pos.z + h.vel.z*t == z + vz*t
-        )
+        s.add(h.pos.x + h.vel.x*t == x + vx*t,
+              h.pos.y + h.vel.y*t == y + vy*t,
+              h.pos.z + h.vel.z*t == z + vz*t,
+              t > 0)
     s.check()
     m = s.model()
-    return m[x].py_value() + m[y].py_value() + m[z].py_value()
+    return m.eval(x + y + z)
