@@ -23,7 +23,7 @@ def download(day_number: int):
                     'User-Agent': Constants.USER_AGENT
                 },
                 cookies={
-                    'session': os.environ['AOC_SESSION']
+                    'session': os.getenv('AOC_SESSION_2023')
                 }
             )
 

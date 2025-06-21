@@ -1,10 +1,9 @@
+import z3
 from .lib.advent import advent
 from .lib.util import Vec3
 from io import TextIOWrapper
 from dataclasses import dataclass
 from itertools import islice
-import turtle
-
 
 @dataclass(eq=True)
 class Hailstone:
@@ -50,4 +49,19 @@ def solve1(hailstones: list[Hailstone]):
 
 @advent.day(24, part=2)
 def solve2(hailstones: list[Hailstone]):
-    return None
+    # Maybe someday I'll implement a vanilla solution. Not today though
+    x, y, z, vx, vy, vz = z3.Ints('x y z vx vy vz')
+    s = z3.Solver()
+
+    ts = []
+    for i, h in enumerate(hailstones):
+        t = z3.Int(f't{i}')
+        ts.append(t)
+        s.add(
+            h.pos.x + h.vel.x*t == x + vx*t,
+            h.pos.y + h.vel.y*t == y + vy*t,
+            h.pos.z + h.vel.z*t == z + vz*t
+        )
+    s.check()
+    m = s.model()
+    return m[x].py_value() + m[y].py_value() + m[z].py_value()
