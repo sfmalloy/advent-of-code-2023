@@ -1,3 +1,6 @@
+**NOTE:** This repository is now archived. Please use [my solutions monorepo](https://github.com/sfmalloy/advent-of-code) to find any future changes.
+___
+
 # Advent of Code 2023
 
 These solutions are written in Python 3, and some may use Python 3.12 features. You can run either a single day to get its answer and runtime, or run all the available days and get their combined runtime.
